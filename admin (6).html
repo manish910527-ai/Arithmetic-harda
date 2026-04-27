@@ -1,0 +1,3071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arithmetic Computer Education - Admin Panel</title>
+<!-- Firebase loaded dynamically at bottom for faster rendering -->
+<style>
+:root {
+  --bg-primary: #f0fdf4;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255,255,255,0.8);
+  --bg-sidebar: #ffffff;
+  --bg-input: #f0fdf4;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --border-color: #e2e8f0;
+  --emerald-50: #ecfdf5;
+  --emerald-100: #d1fae5;
+  --emerald-200: #a7f3d0;
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+  --glass-bg: rgba(255,255,255,0.7);
+  --glass-border: rgba(255,255,255,0.3);
+  --gradient-primary: linear-gradient(135deg, #10b981, #14b8a6);
+  --gradient-dark: linear-gradient(135deg, #1a1a2e, #16213e);
+  --badge-free: #10b981;
+  --badge-paid: #f59e0b;
+  --badge-pending: #f59e0b;
+  --badge-approved: #10b981;
+  --badge-rejected: #ef4444;
+  --badge-active: #10b981;
+  --badge-inactive: #94a3b8;
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(30,41,59,0.8);
+  --bg-sidebar: #1e293b;
+  --bg-input: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #334155;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.4);
+  --glass-bg: rgba(30,41,59,0.7);
+  --glass-border: rgba(51,65,85,0.3);
+  --scrollbar-track: #1e293b;
+  --scrollbar-thumb: #475569;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
+}
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius:3px; }
+
+/* ===== LOGIN PAGE ===== */
+#loginPage {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 30%, #16213e 60%, #0f172a 100%);
+  position:relative;
+  overflow:hidden;
+}
+#loginPage::before {
+  content:'';
+  position:absolute;
+  width:400px;height:400px;
+  background:radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%);
+  top:-100px;right:-100px;
+  border-radius:50%;
+}
+#loginPage::after {
+  content:'';
+  position:absolute;
+  width:300px;height:300px;
+  background:radial-gradient(circle, rgba(20,184,166,0.1), transparent 70%);
+  bottom:-50px;left:-50px;
+  border-radius:50%;
+}
+.login-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius:20px;
+  padding:48px 40px;
+  width:100%;
+  max-width:420px;
+  position:relative;
+  z-index:1;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.login-card h1 {
+  text-align:center;
+  color:#fff;
+  font-size:1.6rem;
+  margin-bottom:6px;
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.login-card p {
+  text-align:center;
+  color:rgba(255,255,255,0.5);
+  font-size:0.85rem;
+  margin-bottom:32px;
+}
+.login-card .logo-icon {
+  text-align:center;
+  margin-bottom:16px;
+  font-size:3rem;
+}
+.login-card label {
+  display:block;
+  color:rgba(255,255,255,0.7);
+  font-size:0.8rem;
+  margin-bottom:6px;
+  font-weight:500;
+}
+.login-card input {
+  width:100%;
+  padding:12px 16px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);
+  color:#fff;
+  font-size:0.95rem;
+  outline:none;
+  transition:border 0.3s, box-shadow 0.3s;
+  margin-bottom:16px;
+}
+.login-card input:focus {
+  border-color:#10b981;
+  box-shadow:0 0 0 3px rgba(16,185,129,0.2);
+}
+.login-card input::placeholder { color:rgba(255,255,255,0.3); }
+.login-btn {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(135deg, #10b981, #14b8a6);
+  color:#fff;
+  font-size:1rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:transform 0.2s, box-shadow 0.2s;
+  margin-top:8px;
+}
+.login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(16,185,129,0.3); }
+.login-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+.login-error {
+  color:#ef4444;
+  text-align:center;
+  font-size:0.85rem;
+  margin-top:12px;
+  min-height:20px;
+}
+
+/* ===== LOADING ===== */
+#loadingPage {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(135deg, #0f172a, #16213e);
+  flex-direction:column;
+  gap:20px;
+}
+.spinner {
+  width:48px;height:48px;
+  border:4px solid rgba(16,185,129,0.2);
+  border-top-color:#10b981;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+#loadingPage p { color:rgba(255,255,255,0.6); font-size:0.9rem; }
+
+/* ===== MAIN LAYOUT ===== */
+#adminPanel { display:none; min-height:100vh; }
+.sidebar {
+  position:fixed;
+  left:0;top:0;bottom:0;
+  width:260px;
+  background:var(--bg-sidebar);
+  border-right:1px solid var(--border-color);
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  transition:transform 0.3s ease;
+  overflow-y:auto;
+}
+.sidebar-header {
+  padding:20px;
+  border-bottom:1px solid var(--border-color);
+}
+.sidebar-header h2 {
+  font-size:1.1rem;
+  background:var(--gradient-primary);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.sidebar-header span {
+  font-size:0.7rem;
+  color:var(--text-muted);
+  display:block;
+  margin-top:2px;
+}
+.sidebar-nav {
+  flex:1;
+  padding:12px 0;
+}
+.nav-item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:11px 20px;
+  color:var(--text-secondary);
+  cursor:pointer;
+  transition:all 0.2s;
+  font-size:0.88rem;
+  border-left:3px solid transparent;
+  position:relative;
+}
+.nav-item:hover {
+  background:var(--emerald-50);
+  color:var(--emerald-600);
+}
+[data-theme="dark"] .nav-item:hover {
+  background:rgba(16,185,129,0.1);
+}
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(16,185,129,0.1), transparent);
+  color:var(--emerald-600);
+  border-left-color:var(--emerald-500);
+  font-weight:600;
+}
+.nav-item .nav-icon {
+  width:20px;
+  text-align:center;
+  font-size:1.1rem;
+  flex-shrink:0;
+}
+.nav-item .badge {
+  position:absolute;
+  right:16px;
+  background:#ef4444;
+  color:#fff;
+  font-size:0.65rem;
+  padding:2px 7px;
+  border-radius:10px;
+  font-weight:600;
+}
+.sidebar-footer {
+  padding:16px 20px;
+  border-top:1px solid var(--border-color);
+}
+.logout-btn {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 16px;
+  width:100%;
+  border:1px solid #ef4444;
+  background:transparent;
+  color:#ef4444;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:0.85rem;
+  transition:all 0.2s;
+}
+.logout-btn:hover { background:#ef4444; color:#fff; }
+
+.main-content {
+  margin-left:260px;
+  min-height:100vh;
+  transition:margin 0.3s;
+}
+.topbar {
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:var(--bg-secondary);
+  border-bottom:1px solid var(--border-color);
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  backdrop-filter:blur(10px);
+}
+.topbar-left {
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.hamburger {
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:var(--text-primary);
+  font-size:1.5rem;
+  padding:4px;
+}
+.topbar-title {
+  font-size:1.1rem;
+  font-weight:600;
+}
+.topbar-right {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.theme-toggle {
+  width:40px;height:40px;
+  border-radius:10px;
+  border:1px solid var(--border-color);
+  background:var(--bg-card);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.1rem;
+  transition:all 0.2s;
+}
+.theme-toggle:hover {
+  border-color:var(--emerald-500);
+}
+.admin-info {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:0.85rem;
+  color:var(--text-secondary);
+}
+.admin-avatar {
+  width:32px;height:32px;
+  border-radius:8px;
+  background:var(--gradient-primary);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.8rem;
+  font-weight:700;
+}
+.content-area {
+  padding:24px;
+}
+
+/* ===== OVERLAY ===== */
+.sidebar-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  z-index:99;
+}
+
+/* ===== CARDS ===== */
+.glass-card {
+  background:var(--glass-bg);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  border-radius:16px;
+  padding:24px;
+  box-shadow:var(--shadow-md);
+  transition:all 0.3s;
+}
+.glass-card:hover { box-shadow:var(--shadow-lg); }
+
+.stat-card {
+  background:var(--glass-bg);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  padding:20px;
+  transition:all 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.stat-card::before {
+  content:'';
+  position:absolute;
+  top:0;right:0;
+  width:80px;height:80px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(16,185,129,0.1), transparent 70%);
+  transform:translate(20px,-20px);
+}
+.stat-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.stat-card .stat-icon {
+  font-size:1.8rem;
+  margin-bottom:8px;
+}
+.stat-card .stat-value {
+  font-size:1.8rem;
+  font-weight:700;
+  color:var(--text-primary);
+}
+.stat-card .stat-label {
+  font-size:0.78rem;
+  color:var(--text-muted);
+  margin-top:2px;
+}
+
+/* ===== STATS GRID ===== */
+.stats-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:16px;
+  margin-bottom:24px;
+}
+
+/* ===== TABLES ===== */
+.data-table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:0.85rem;
+}
+.data-table th {
+  padding:10px 12px;
+  text-align:left;
+  color:var(--text-muted);
+  font-weight:600;
+  font-size:0.75rem;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  border-bottom:2px solid var(--border-color);
+}
+.data-table td {
+  padding:10px 12px;
+  border-bottom:1px solid var(--border-color);
+  color:var(--text-secondary);
+  vertical-align:middle;
+}
+.data-table tr:hover td { background:rgba(16,185,129,0.03); }
+
+/* ===== BADGES ===== */
+.badge-status {
+  display:inline-flex;
+  align-items:center;
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:0.72rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.3px;
+}
+.badge-free { background:rgba(16,185,129,0.1); color:var(--emerald-600); }
+.badge-paid { background:rgba(245,158,11,0.1); color:#d97706; }
+.badge-active { background:rgba(16,185,129,0.1); color:var(--emerald-600); }
+.badge-inactive { background:rgba(148,163,184,0.1); color:#64748b; }
+.badge-pending { background:rgba(245,158,11,0.1); color:#d97706; }
+.badge-approved { background:rgba(16,185,129,0.1); color:var(--emerald-600); }
+.badge-rejected { background:rgba(239,68,68,0.1); color:#dc2626; }
+.badge-info { background:rgba(59,130,246,0.1); color:#2563eb; }
+.badge-success { background:rgba(16,185,129,0.1); color:#059669; }
+.badge-warning { background:rgba(245,158,11,0.1); color:#d97706; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 16px;
+  border-radius:8px;
+  border:none;
+  font-size:0.82rem;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+}
+.btn-primary { background:var(--gradient-primary); color:#fff; }
+.btn-primary:hover { box-shadow:0 4px 15px rgba(16,185,129,0.3); transform:translateY(-1px); }
+.btn-danger { background:#ef4444; color:#fff; }
+.btn-danger:hover { background:#dc2626; }
+.btn-success { background:#10b981; color:#fff; }
+.btn-success:hover { background:#059669; }
+.btn-warning { background:#f59e0b; color:#fff; }
+.btn-warning:hover { background:#d97706; }
+.btn-outline {
+  background:transparent;
+  border:1px solid var(--border-color);
+  color:var(--text-secondary);
+}
+.btn-outline:hover { border-color:var(--emerald-500); color:var(--emerald-500); }
+.btn-sm { padding:5px 10px; font-size:0.75rem; }
+.btn-approve { background:#10b981; color:#fff; }
+.btn-approve:hover { background:#059669; }
+.btn-reject { background:#ef4444; color:#fff; }
+.btn-reject:hover { background:#dc2626; }
+
+/* ===== FORMS ===== */
+.form-group {
+  margin-bottom:16px;
+}
+.form-group label {
+  display:block;
+  font-size:0.8rem;
+  font-weight:500;
+  color:var(--text-secondary);
+  margin-bottom:6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width:100%;
+  padding:10px 14px;
+  border-radius:8px;
+  border:1px solid var(--border-color);
+  background:var(--bg-input);
+  color:var(--text-primary);
+  font-size:0.88rem;
+  outline:none;
+  transition:border 0.3s, box-shadow 0.3s;
+  font-family:inherit;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color:var(--emerald-500);
+  box-shadow:0 0 0 3px rgba(16,185,129,0.15);
+}
+.form-group textarea { resize:vertical; min-height:80px; }
+
+.toggle-group {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.toggle-switch {
+  position:relative;
+  width:44px;
+  height:24px;
+  cursor:pointer;
+}
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute;
+  inset:0;
+  background:#cbd5e1;
+  border-radius:12px;
+  transition:0.3s;
+}
+.toggle-slider::before {
+  content:'';
+  position:absolute;
+  width:18px;height:18px;
+  left:3px;bottom:3px;
+  background:#fff;
+  border-radius:50%;
+  transition:0.3s;
+}
+.toggle-switch input:checked + .toggle-slider { background:var(--emerald-500); }
+.toggle-switch input:checked + .toggle-slider::before { transform:translateX(20px); }
+
+.radio-group {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.radio-group label {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  font-size:0.85rem;
+  color:var(--text-secondary);
+}
+.radio-group input[type="radio"] {
+  width:auto;
+  accent-color:var(--emerald-500);
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal-overlay.active { display:flex; }
+.modal-content {
+  background:var(--bg-secondary);
+  border-radius:16px;
+  width:100%;
+  max-width:600px;
+  max-height:85vh;
+  overflow-y:auto;
+  padding:28px;
+  box-shadow:var(--shadow-lg);
+}
+.modal-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.modal-header h3 { font-size:1.1rem; font-weight:600; }
+.modal-close {
+  width:32px;height:32px;
+  border:none;
+  background:var(--bg-input);
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1.2rem;
+  color:var(--text-secondary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.2s;
+}
+.modal-close:hover { background:#ef4444; color:#fff; }
+
+/* ===== TABS ===== */
+.tabs {
+  display:flex;
+  gap:4px;
+  margin-bottom:20px;
+  background:var(--bg-input);
+  padding:4px;
+  border-radius:10px;
+  overflow-x:auto;
+}
+.tab-btn {
+  padding:8px 18px;
+  border:none;
+  background:transparent;
+  color:var(--text-muted);
+  font-size:0.82rem;
+  font-weight:500;
+  cursor:pointer;
+  border-radius:8px;
+  transition:all 0.2s;
+  white-space:nowrap;
+  font-family:inherit;
+}
+.tab-btn.active {
+  background:var(--gradient-primary);
+  color:#fff;
+}
+.tab-btn:hover:not(.active) { color:var(--text-primary); }
+
+/* ===== SECTION ===== */
+.section-title {
+  font-size:1.1rem;
+  font-weight:700;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-title .icon { font-size:1.2rem; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align:center;
+  padding:40px 20px;
+  color:var(--text-muted);
+}
+.empty-state .empty-icon { font-size:3rem; margin-bottom:12px; opacity:0.5; }
+.empty-state p { font-size:0.9rem; }
+
+/* ===== SEARCH ===== */
+.search-bar {
+  position:relative;
+  margin-bottom:16px;
+}
+.search-bar input {
+  width:100%;
+  padding:10px 14px 10px 38px;
+  border:1px solid var(--border-color);
+  border-radius:10px;
+  background:var(--bg-input);
+  color:var(--text-primary);
+  font-size:0.88rem;
+  outline:none;
+  transition:border 0.3s;
+}
+.search-bar input:focus { border-color:var(--emerald-500); }
+.search-bar .search-icon {
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--text-muted);
+  font-size:0.9rem;
+}
+
+/* ===== LEADERBOARD ===== */
+.podium {
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:30px;
+  padding-top:20px;
+}
+.podium-item {
+  text-align:center;
+  border-radius:12px;
+  padding:16px 20px 20px;
+  min-width:100px;
+  position:relative;
+}
+.podium-item.first {
+  background:linear-gradient(135deg, #fbbf24, #f59e0b);
+  color:#fff;
+  min-height:160px;
+  order:2;
+}
+.podium-item.second {
+  background:linear-gradient(135deg, #94a3b8, #64748b);
+  color:#fff;
+  min-height:130px;
+  order:1;
+}
+.podium-item.third {
+  background:linear-gradient(135deg, #c2884d, #a3723a);
+  color:#fff;
+  min-height:110px;
+  order:3;
+}
+.podium-medal { font-size:2rem; margin-bottom:4px; }
+.podium-name { font-size:0.82rem; font-weight:600; word-break:break-word; }
+.podium-score { font-size:0.72rem; opacity:0.8; margin-top:4px; }
+
+.rank-list { list-style:none; }
+.rank-item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 16px;
+  border-bottom:1px solid var(--border-color);
+  font-size:0.85rem;
+}
+.rank-item:hover { background:rgba(16,185,129,0.03); }
+.rank-number {
+  width:28px;height:28px;
+  border-radius:8px;
+  background:var(--bg-input);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:0.78rem;
+  color:var(--text-muted);
+  flex-shrink:0;
+}
+.rank-name { flex:1; font-weight:500; color:var(--text-primary); }
+.rank-score { font-weight:600; color:var(--emerald-600); }
+
+/* ===== QUICK ACTIONS ===== */
+.quick-actions {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+  gap:12px;
+  margin-bottom:24px;
+}
+.quick-action-btn {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 18px;
+  border-radius:12px;
+  border:1px solid var(--border-color);
+  background:var(--glass-bg);
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+  color:var(--text-primary);
+}
+.quick-action-btn:hover {
+  border-color:var(--emerald-500);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-md);
+}
+.quick-action-btn .qa-icon {
+  width:36px;height:36px;
+  border-radius:10px;
+  background:var(--gradient-primary);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.1rem;
+  flex-shrink:0;
+}
+.quick-action-btn .qa-text {
+  font-size:0.82rem;
+  font-weight:500;
+}
+
+/* ===== TOAST ===== */
+.toast-container {
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:500;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.toast {
+  padding:12px 20px;
+  border-radius:10px;
+  color:#fff;
+  font-size:0.85rem;
+  font-weight:500;
+  animation:slideIn 0.3s ease;
+  box-shadow:var(--shadow-lg);
+  max-width:320px;
+}
+.toast-success { background:#10b981; }
+.toast-error { background:#ef4444; }
+.toast-info { background:#3b82f6; }
+.toast-warning { background:#f59e0b; }
+@keyframes slideIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+
+/* ===== CONFIRM DIALOG ===== */
+.confirm-dialog {
+  text-align:center;
+}
+.confirm-dialog .confirm-icon { font-size:3rem; margin-bottom:12px; }
+.confirm-dialog p { font-size:0.95rem; margin-bottom:20px; color:var(--text-secondary); }
+.confirm-dialog .confirm-btns {
+  display:flex;
+  gap:10px;
+  justify-content:center;
+}
+
+/* ===== QUESTION CARD ===== */
+.question-card {
+  background:var(--bg-input);
+  border-radius:10px;
+  padding:14px;
+  margin-bottom:10px;
+  border-left:3px solid var(--emerald-500);
+}
+.question-card .q-text { font-weight:500; margin-bottom:6px; font-size:0.88rem; }
+.question-card .q-options { font-size:0.8rem; color:var(--text-muted); margin-bottom:4px; }
+.question-card .q-correct { color:var(--emerald-600); font-size:0.8rem; font-weight:600; }
+.question-card .q-marks { font-size:0.75rem; color:var(--text-muted); }
+.question-card .q-actions { margin-top:8px; display:flex; gap:6px; }
+
+/* ===== VIDEO ITEM ===== */
+.video-item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 14px;
+  background:var(--bg-input);
+  border-radius:8px;
+  margin-bottom:8px;
+}
+.video-item .v-order {
+  width:28px;height:28px;
+  border-radius:6px;
+  background:var(--emerald-100);
+  color:var(--emerald-700);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:0.75rem;
+  flex-shrink:0;
+}
+[data-theme="dark"] .video-item .v-order { background:rgba(16,185,129,0.2); color:var(--emerald-400); }
+.video-item .v-title { flex:1; font-size:0.85rem; font-weight:500; }
+.video-item .v-actions { display:flex; gap:6px; }
+
+/* ===== IMAGE PREVIEW ===== */
+.img-preview {
+  width:60px;height:40px;
+  object-fit:cover;
+  border-radius:6px;
+  border:1px solid var(--border-color);
+}
+
+/* ===== PAGE SECTIONS ===== */
+.page-section { display:none; }
+.page-section.active { display:block; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:768px) {
+  .sidebar { transform:translateX(-100%); }
+  .sidebar.open { transform:translateX(0); }
+  .sidebar-overlay.active { display:block; }
+  .main-content { margin-left:0; }
+  .hamburger { display:block; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .content-area { padding:16px; }
+  .podium-item { min-width:80px; padding:12px 14px; }
+  .data-table { font-size:0.75rem; }
+  .data-table th, .data-table td { padding:8px 6px; }
+  .modal-content { max-width:95%; padding:20px; }
+  .topbar { padding:10px 16px; }
+}
+@media (max-width:480px) {
+  .stats-grid { grid-template-columns:1fr; }
+  .quick-actions { grid-template-columns:1fr; }
+}
+
+/* ===== SETTINGS ===== */
+.settings-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+  gap:16px;
+}
+.setting-item {
+  background:var(--glass-bg);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  border-radius:12px;
+  padding:20px;
+}
+.setting-item label {
+  font-size:0.8rem;
+  font-weight:600;
+  color:var(--text-secondary);
+  margin-bottom:8px;
+  display:block;
+}
+.setting-item .setting-desc {
+  font-size:0.72rem;
+  color:var(--text-muted);
+  margin-bottom:10px;
+}
+
+/* ===== BANNER PREVIEW ===== */
+.banner-preview {
+  width:100%;
+  max-height:120px;
+  object-fit:cover;
+  border-radius:8px;
+  border:1px solid var(--border-color);
+}
+
+/* ===== NOTIFICATION ITEM ===== */
+.notif-item {
+  display:flex;
+  gap:12px;
+  padding:14px;
+  border-bottom:1px solid var(--border-color);
+}
+.notif-item .notif-icon {
+  width:36px;height:36px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  flex-shrink:0;
+}
+.notif-icon.info { background:rgba(59,130,246,0.1); color:#2563eb; }
+.notif-icon.success { background:rgba(16,185,129,0.1); color:#059669; }
+.notif-icon.warning { background:rgba(245,158,11,0.1); color:#d97706; }
+.notif-item .notif-content { flex:1; }
+.notif-item .notif-title { font-weight:600; font-size:0.88rem; }
+.notif-item .notif-msg { font-size:0.8rem; color:var(--text-muted); margin-top:2px; }
+.notif-item .notif-time { font-size:0.7rem; color:var(--text-muted); margin-top:4px; }
+
+/* ===== SCROLL AREA ===== */
+.scroll-area {
+  max-height:400px;
+  overflow-y:auto;
+}
+
+/* ===== SKELETON ===== */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-input) 25%, rgba(16,185,129,0.05) 50%, var(--bg-input) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius:8px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skeleton-line { height:16px; margin-bottom:8px; }
+.skeleton-line.short { width:60%; }
+.skeleton-card { height:100px; }
+</style>
+</head>
+<body>
+
+<!-- LOADING PAGE -->
+<div id="loadingPage">
+  <div class="spinner"></div>
+  <p>Loading Admin Panel...</p>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" style="display:none;">
+  <div class="login-card">
+    <div class="logo-icon">&#x1F4BB;</div>
+    <h1>Arithmetic Computer Education</h1>
+    <p>Admin Control Panel</p>
+    <label>Email Address</label>
+    <input type="email" id="loginEmail" placeholder="admin@arithmetic.com" autocomplete="email">
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
+    <button class="login-btn" id="loginBtn" onclick="handleLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>&#x1F4BB; Arithmetic</h2>
+      <span>Computer Education Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+        <span class="nav-icon">&#x1F4CA;</span> Dashboard
+      </div>
+      <div class="nav-item" data-page="tests" onclick="navigateTo('tests')">
+        <span class="nav-icon">&#x1F4DD;</span> Tests
+      </div>
+      <div class="nav-item" data-page="pdfs" onclick="navigateTo('pdfs')">
+        <span class="nav-icon">&#x1F4D1;</span> PDFs
+      </div>
+      <div class="nav-item" data-page="courses" onclick="navigateTo('courses')">
+        <span class="nav-icon">&#x1F3AC;</span> Courses
+      </div>
+      <div class="nav-item" data-page="users" onclick="navigateTo('users')">
+        <span class="nav-icon">&#x1F465;</span> Users
+      </div>
+      <div class="nav-item" data-page="payments" onclick="navigateTo('payments')">
+        <span class="nav-icon">&#x1F4B3;</span> Payments
+        <span class="badge" id="paymentBadge" style="display:none;">0</span>
+      </div>
+      <div class="nav-item" data-page="banners" onclick="navigateTo('banners')">
+        <span class="nav-icon">&#x1F5BC;</span> Banners
+      </div>
+      <div class="nav-item" data-page="notifications" onclick="navigateTo('notifications')">
+        <span class="nav-icon">&#x1F514;</span> Notifications
+      </div>
+      <div class="nav-item" data-page="settings" onclick="navigateTo('settings')">
+        <span class="nav-icon">&#x2699;</span> Settings
+      </div>
+      <div class="nav-item" data-page="leaderboard" onclick="navigateTo('leaderboard')">
+        <span class="nav-icon">&#x1F3C6;</span> Leaderboard
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="handleLogout()">
+        <span>&#x1F6AA;</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">&#9776;</button>
+        <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Toggle theme">&#x1F319;</button>
+        <div class="admin-info">
+          <div class="admin-avatar" id="adminAvatar">A</div>
+          <span id="adminName">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page-section active" id="page-dashboard">
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="stat-icon">&#x1F465;</div>
+            <div class="stat-value" id="statUsers">0</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#x1F4DD;</div>
+            <div class="stat-value" id="statTests">0</div>
+            <div class="stat-label">Total Tests</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#x1F4D1;</div>
+            <div class="stat-value" id="statPdfs">0</div>
+            <div class="stat-label">Total PDFs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#x1F3AC;</div>
+            <div class="stat-value" id="statCourses">0</div>
+            <div class="stat-label">Total Courses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#x1F4B0;</div>
+            <div class="stat-value" id="statRevenue">&#x20B9;0</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">&#x23F3;</div>
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-label">Pending Payments</div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-action-btn" onclick="navigateTo('tests');openAddTestModal()">
+            <div class="qa-icon">&#x2795;</div>
+            <div class="qa-text">Add Test</div>
+          </button>
+          <button class="quick-action-btn" onclick="navigateTo('pdfs');openAddPdfModal()">
+            <div class="qa-icon">&#x1F4C4;</div>
+            <div class="qa-text">Upload PDF</div>
+          </button>
+          <button class="quick-action-btn" onclick="navigateTo('courses');openAddCourseModal()">
+            <div class="qa-icon">&#x1F3AC;</div>
+            <div class="qa-text">Add Course</div>
+          </button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="glass-card">
+            <div class="section-title"><span class="icon">&#x1F4B3;</span> Recent Payments</div>
+            <div class="scroll-area" style="max-height:250px;">
+              <table class="data-table" id="recentPaymentsTable">
+                <thead><tr><th>User</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="glass-card">
+            <div class="section-title"><span class="icon">&#x1F465;</span> Recent Users</div>
+            <div class="scroll-area" style="max-height:250px;">
+              <table class="data-table" id="recentUsersTable">
+                <thead><tr><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TESTS ===== -->
+      <div class="page-section" id="page-tests">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div class="section-title" style="margin-bottom:0;"><span class="icon">&#x1F4DD;</span> Manage Tests</div>
+          <button class="btn btn-primary" onclick="openAddTestModal()">&#x2795; Add Test</button>
+        </div>
+        <div id="testsList"></div>
+      </div>
+
+      <!-- ===== PDFs ===== -->
+      <div class="page-section" id="page-pdfs">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div class="section-title" style="margin-bottom:0;"><span class="icon">&#x1F4D1;</span> Manage PDFs</div>
+          <button class="btn btn-primary" onclick="openAddPdfModal()">&#x2795; Add PDF</button>
+        </div>
+        <div id="pdfsList"></div>
+      </div>
+
+      <!-- ===== COURSES ===== -->
+      <div class="page-section" id="page-courses">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div class="section-title" style="margin-bottom:0;"><span class="icon">&#x1F3AC;</span> Manage Courses</div>
+          <button class="btn btn-primary" onclick="openAddCourseModal()">&#x2795; Add Course</button>
+        </div>
+        <div id="coursesList"></div>
+      </div>
+
+      <!-- ===== USERS ===== -->
+      <div class="page-section" id="page-users">
+        <div class="section-title"><span class="icon">&#x1F465;</span> Manage Users</div>
+        <div class="search-bar">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="text" id="userSearch" placeholder="Search users by name or email..." oninput="filterUsers()">
+        </div>
+        <div class="glass-card" style="padding:0;">
+          <div class="scroll-area">
+            <table class="data-table" id="usersTable">
+              <thead><tr><th>Name</th><th>Email</th><th>Exam</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAYMENTS ===== -->
+      <div class="page-section" id="page-payments">
+        <div class="section-title"><span class="icon">&#x1F4B3;</span> Payment Approvals</div>
+        <div class="stats-grid" style="margin-bottom:16px;">
+          <div class="stat-card">
+            <div class="stat-value" id="payRevenue">&#x20B9;0</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="payPending">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="payApproved">0</div>
+            <div class="stat-label">Approved</div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchPaymentTab('pending',this)">&#x23F3; Pending</button>
+          <button class="tab-btn" onclick="switchPaymentTab('approved',this)">&#x2705; Approved</button>
+          <button class="tab-btn" onclick="switchPaymentTab('rejected',this)">&#x274C; Rejected</button>
+        </div>
+        <div class="glass-card" style="padding:0;" id="paymentsTableCard">
+          <div class="scroll-area">
+            <table class="data-table" id="paymentsTable">
+              <thead><tr><th>User</th><th>Amount</th><th>Type</th><th>UPI Ref</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BANNERS ===== -->
+      <div class="page-section" id="page-banners">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div class="section-title" style="margin-bottom:0;"><span class="icon">&#x1F5BC;</span> Banner Management</div>
+          <button class="btn btn-primary" onclick="openAddBannerModal()">&#x2795; Add Banner</button>
+        </div>
+        <div id="bannersList"></div>
+      </div>
+
+      <!-- ===== NOTIFICATIONS ===== -->
+      <div class="page-section" id="page-notifications">
+        <div class="section-title"><span class="icon">&#x1F514;</span> Notifications</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="glass-card">
+            <h3 style="margin-bottom:16px;font-size:0.95rem;">Send Notification</h3>
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="notifTitle" placeholder="Notification title">
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea id="notifMessage" placeholder="Notification message"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <select id="notifType">
+                <option value="info">Info</option>
+                <option value="success">Success</option>
+                <option value="warning">Warning</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Target User</label>
+              <select id="notifTarget">
+                <option value="all">All Users</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="sendNotification()">&#x1F4E4; Send Notification</button>
+          </div>
+          <div class="glass-card">
+            <h3 style="margin-bottom:16px;font-size:0.95rem;">Notification History</h3>
+            <div class="scroll-area" id="notifHistory" style="max-height:500px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS ===== -->
+      <div class="page-section" id="page-settings">
+        <div class="section-title"><span class="icon">&#x2699;</span> App Settings</div>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label>UPI ID</label>
+            <div class="setting-desc">UPI ID for payment QR code</div>
+            <input type="text" id="setUpiId" placeholder="arithmetic@upi" class="form-group" style="margin-bottom:0;width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:0.88rem;outline:none;">
+          </div>
+          <div class="setting-item">
+            <label>QR Code URL</label>
+            <div class="setting-desc">URL for payment QR code image</div>
+            <input type="text" id="setQrUrl" placeholder="https://..." style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:0.88rem;outline:none;">
+          </div>
+          <div class="setting-item">
+            <label>Contact Number</label>
+            <div class="setting-desc">Support/WhatsApp contact number</div>
+            <input type="text" id="setContact" placeholder="+91 XXXXX XXXXX" style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:0.88rem;outline:none;">
+          </div>
+          <div class="setting-item">
+            <label>YouTube Channel</label>
+            <div class="setting-desc">YouTube channel URL</div>
+            <input type="text" id="setYoutube" placeholder="https://youtube.com/..." style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:0.88rem;outline:none;">
+          </div>
+          <div class="setting-item">
+            <label>App Name</label>
+            <div class="setting-desc">Application display name</div>
+            <input type="text" id="setAppName" placeholder="Arithmetic Computer Education" style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:0.88rem;outline:none;">
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:20px;" onclick="saveSettings()">&#x1F4BE; Save Settings</button>
+      </div>
+
+      <!-- ===== LEADERBOARD ===== -->
+      <div class="page-section" id="page-leaderboard">
+        <div class="section-title"><span class="icon">&#x1F3C6;</span> Leaderboard</div>
+        <div class="glass-card" style="margin-bottom:20px;">
+          <div class="podium" id="leaderboardPodium"></div>
+        </div>
+        <div class="glass-card">
+          <div class="scroll-area" id="leaderboardList" style="max-height:500px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ===== FIREBASE CONFIG =====
+// >>> REPLACE THESE WITH YOUR FIREBASE PROJECT CONFIG <<<
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let FIREBASE_CONNECTED = false;
+let auth = null;
+let db = null;
+let firebaseReady = false;
+
+// Check if config has placeholder values
+const hasPlaceholders = firebaseConfig.apiKey === "YOUR_API_KEY" ||
+  firebaseConfig.databaseURL.includes("YOUR_PROJECT");
+
+// ===== DYNAMIC FIREBASE LOADING =====
+function loadFirebaseScripts() {
+  return new Promise((resolve) => {
+    if (hasPlaceholders) {
+      console.warn("Firebase config has placeholder values — running in Demo Mode.");
+      resolve(false);
+      return;
+    }
+    const scripts = [
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js'
+    ];
+    let loaded = 0;
+    scripts.forEach(src => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => { loaded++; if (loaded === scripts.length) resolve(true); };
+      s.onerror = () => { console.warn('Failed to load:', src); resolve(false); };
+      document.head.appendChild(s);
+    });
+    // Timeout: if scripts don't load in 8 seconds, fallback to demo mode
+    setTimeout(() => resolve(false), 8000);
+  });
+}
+
+async function initFirebase() {
+  const loaded = await loadFirebaseScripts();
+  if (loaded && typeof firebase !== 'undefined') {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.database();
+      FIREBASE_CONNECTED = true;
+      console.log("Firebase connected successfully");
+    } catch(e) {
+      FIREBASE_CONNECTED = false;
+      console.warn("Firebase init failed, running in demo mode:", e.message);
+    }
+  } else {
+    FIREBASE_CONNECTED = false;
+    console.warn("Firebase not loaded, running in demo mode.");
+  }
+  firebaseReady = true;
+  onFirebaseReady();
+}
+
+// ===== DEMO DATA =====
+const DEMO_DATA = {
+  users: {
+    "demo_uid1": { name: "Rahul Sharma", email: "rahul@example.com", examType: "Computer Basics", role: "student", createdAt: Date.now() - 86400000 * 5 },
+    "demo_uid2": { name: "Priya Patel", email: "priya@example.com", examType: "Programming", role: "student", createdAt: Date.now() - 86400000 * 3 },
+    "demo_uid3": { name: "Amit Kumar", email: "amit@example.com", examType: "MS Office", role: "student", createdAt: Date.now() - 86400000 * 1 },
+    "admin_uid": { name: "Admin", email: "admin@arithmetic.com", role: "admin", createdAt: Date.now() - 86400000 * 30 }
+  },
+  tests: {
+    "demo_test1": { title: "Basic Computer Knowledge", description: "Test your basic computer skills", category: "Computer Basics", isPaid: false, price: 0, timeLimit: 15, totalMarks: 50, isActive: true, createdAt: Date.now() - 86400000 * 10 },
+    "demo_test2": { title: "Advanced Computer Science", description: "Advanced level computer science test", category: "Computer Science", isPaid: true, price: 49, timeLimit: 30, totalMarks: 50, isActive: true, createdAt: Date.now() - 86400000 * 7 }
+  },
+  questions: {
+    "demo_q1": { testId: "demo_test1", question: "What does CPU stand for?", optionA: "Central Processing Unit", optionB: "Computer Personal Unit", optionC: "Central Program Utility", optionD: "Computer Processing Utility", correctAns: "A", marks: 10, explanation: "CPU stands for Central Processing Unit." },
+    "demo_q2": { testId: "demo_test1", question: "Which is an input device?", optionA: "Monitor", optionB: "Printer", optionC: "Keyboard", optionD: "Speaker", correctAns: "C", marks: 10, explanation: "Keyboard is an input device." },
+    "demo_q3": { testId: "demo_test1", question: "What is RAM?", optionA: "Read Access Memory", optionB: "Random Access Memory", optionC: "Run Application Memory", optionD: "Rapid Access Module", correctAns: "B", marks: 10, explanation: "RAM stands for Random Access Memory." },
+    "demo_q4": { testId: "demo_test1", question: "Which is an operating system?", optionA: "Microsoft Word", optionB: "Google Chrome", optionC: "Windows", optionD: "Photoshop", correctAns: "C", marks: 10, explanation: "Windows is an operating system." },
+    "demo_q5": { testId: "demo_test1", question: "What does HTTP stand for?", optionA: "HyperText Transfer Protocol", optionB: "High Transfer Text Protocol", optionC: "Hyper Transmission Text Protocol", optionD: "Home Text Transfer Protocol", correctAns: "A", marks: 10, explanation: "HTTP stands for HyperText Transfer Protocol." },
+    "demo_q6": { testId: "demo_test2", question: "What is the time complexity of binary search?", optionA: "O(n)", optionB: "O(log n)", optionC: "O(n\u00B2)", optionD: "O(1)", correctAns: "B", marks: 10, explanation: "Binary search has O(log n) time complexity." },
+    "demo_q7": { testId: "demo_test2", question: "Which data structure uses LIFO?", optionA: "Queue", optionB: "Stack", optionC: "Array", optionD: "Linked List", correctAns: "B", marks: 10, explanation: "Stack follows LIFO principle." },
+    "demo_q8": { testId: "demo_test2", question: "What is polymorphism in OOP?", optionA: "Multiple inheritance", optionB: "Same interface different implementation", optionC: "Data hiding", optionD: "Code reuse", correctAns: "B", marks: 10, explanation: "Polymorphism allows same interface with different implementations." },
+    "demo_q9": { testId: "demo_test2", question: "Which protocol is used for secure web browsing?", optionA: "HTTP", optionB: "FTP", optionC: "HTTPS", optionD: "SMTP", correctAns: "C", marks: 10, explanation: "HTTPS provides encrypted communication." },
+    "demo_q10": { testId: "demo_test2", question: "What is normalization in DBMS?", optionA: "Making data larger", optionB: "Reducing data redundancy", optionC: "Deleting data", optionD: "Copying data", correctAns: "B", marks: 10, explanation: "Normalization reduces data redundancy." }
+  },
+  pdfs: {
+    "demo_pdf1": { title: "Computer Basics Notes", description: "Free PDF covering basic computer concepts", imageUrl: "https://placehold.co/400x200/10b981/ffffff?text=Computer+Basics", pdfUrl: "https://example.com/basics.pdf", category: "Computer Basics", isPaid: false, price: 0, isActive: true, createdAt: Date.now() - 86400000 * 8 },
+    "demo_pdf2": { title: "Advanced Programming Guide", description: "Comprehensive programming guide for advanced learners", imageUrl: "https://placehold.co/400x200/059669/ffffff?text=Programming+Guide", pdfUrl: "https://example.com/advanced.pdf", category: "Programming", isPaid: true, price: 99, isActive: true, createdAt: Date.now() - 86400000 * 5 }
+  },
+  courses: {
+    "demo_course1": { title: "Computer Fundamentals", description: "Learn the basics of computers", imageUrl: "https://placehold.co/400x200/14b8a6/ffffff?text=Computer+Fundamentals", category: "Computer Basics", isPaid: false, price: 0, isActive: true, createdAt: Date.now() - 86400000 * 9 },
+    "demo_course2": { title: "Python Programming Masterclass", description: "Complete Python programming course with projects", imageUrl: "https://placehold.co/400x200/059669/ffffff?text=Python+Masterclass", category: "Programming", isPaid: true, price: 199, isActive: true, createdAt: Date.now() - 86400000 * 4 }
+  },
+  videos: {
+    "demo_v1": { courseId: "demo_course1", title: "Introduction to Computers", youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ", order: 1 },
+    "demo_v2": { courseId: "demo_course1", title: "Parts of a Computer", youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ", order: 2 },
+    "demo_v3": { courseId: "demo_course2", title: "Python Setup & Hello World", youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ", order: 1 },
+    "demo_v4": { courseId: "demo_course2", title: "Variables and Data Types", youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ", order: 2 }
+  },
+  payments: {
+    "demo_pay1": { userId: "demo_uid1", amount: 49, paymentType: "test", contentId: "demo_test2", status: "pending", upiRef: "UPI123456", createdAt: Date.now() - 86400000 * 2 },
+    "demo_pay2": { userId: "demo_uid2", amount: 199, paymentType: "course", contentId: "demo_course2", status: "approved", upiRef: "UPI789012", createdAt: Date.now() - 86400000 * 1 }
+  },
+  purchases: {
+    "demo_pur1": { userId: "demo_uid2", contentType: "course", contentId: "demo_course2", paymentId: "demo_pay2", createdAt: Date.now() - 86400000 * 1 }
+  },
+  banners: {
+    "demo_banner1": { title: "Welcome to Arithmetic!", imageUrl: "https://placehold.co/800x300/10b981/ffffff?text=Arithmetic+Education", link: "", order: 1, isActive: true, createdAt: Date.now() - 86400000 * 15 }
+  },
+  notifications: {
+    "demo_notif1": { title: "Welcome!", message: "Welcome to Arithmetic Computer Education admin panel.", type: "info", target: "all", createdAt: Date.now() - 86400000 * 6 },
+    "demo_notif2": { title: "New Course Available", message: "Python Programming Masterclass is now available!", type: "success", target: "all", createdAt: Date.now() - 86400000 * 2 }
+  },
+  settings: {
+    upi_id: { value: "arithmetic@upi" },
+    app_name: { value: "Arithmetic Computer Education" },
+    contact: { value: "+91 99999 99999" },
+    youtube: { value: "https://youtube.com/@arithmetic" },
+    qr_url: { value: "" }
+  },
+  testResults: {
+    "demo_tr1": { userId: "demo_uid1", testId: "demo_test1", score: 40, totalMarks: 50, correctAnswers: 4, totalQuestions: 5, completedAt: Date.now() - 86400000 * 3 },
+    "demo_tr2": { userId: "demo_uid2", testId: "demo_test1", score: 50, totalMarks: 50, correctAnswers: 5, totalQuestions: 5, completedAt: Date.now() - 86400000 * 2 },
+    "demo_tr3": { userId: "demo_uid3", testId: "demo_test1", score: 30, totalMarks: 50, correctAnswers: 3, totalQuestions: 5, completedAt: Date.now() - 86400000 * 1 }
+  }
+};
+
+// ===== LOCAL STORAGE HELPERS FOR DEMO MODE =====
+function getLocalData(key) {
+  try {
+    const stored = localStorage.getItem('arithmetic_demo_' + key);
+    return stored ? JSON.parse(stored) : null;
+  } catch(e) { return null; }
+}
+function setLocalData(key, data) {
+  try { localStorage.setItem('arithmetic_demo_' + key, JSON.stringify(data)); } catch(e) {}
+}
+function initDemoData() {
+  // Initialize localStorage with DEMO_DATA if not already present
+  const keys = ['users','tests','questions','pdfs','courses','videos','payments','purchases','banners','notifications','settings','testResults'];
+  keys.forEach(key => {
+    if (!getLocalData(key)) {
+      setLocalData(key, DEMO_DATA[key]);
+    }
+  });
+}
+
+// ===== GLOBAL STATE =====
+let currentUser = null;
+let allUsers = {};
+let allTests = {};
+let allQuestions = {};
+let allPdfs = {};
+let allCourses = {};
+let allVideos = {};
+let allPayments = {};
+let allPurchases = {};
+let allBanners = {};
+let allNotifications = {};
+let allTestResults = {};
+let allSettings = {};
+let currentPage = 'dashboard';
+let currentPaymentTab = 'pending';
+let initialDataSeeded = false;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  // Start loading Firebase asynchronously — UI renders immediately
+  initFirebase();
+  // Safety timeout: show login page even if Firebase takes too long
+  setTimeout(() => {
+    if (!firebaseReady) {
+      console.warn('Firebase loading timed out, showing demo mode.');
+      FIREBASE_CONNECTED = false;
+      firebaseReady = true;
+      onFirebaseReady();
+    }
+  }, 5000);
+});
+
+// Called after Firebase loading completes (or fails/times out)
+function onFirebaseReady() {
+  if (FIREBASE_CONNECTED && auth) {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const snap = await db.ref('users/' + user.uid).once('value');
+          const userData = snap.val();
+          if (userData && userData.role === 'admin') {
+            currentUser = { uid: user.uid, ...userData };
+            showAdminPanel();
+          } else {
+            auth.signOut();
+            showLoginPage();
+            showLoginError('Access Denied: You are not an admin.');
+          }
+        } catch(e) {
+          console.error(e);
+          auth.signOut();
+          showLoginPage();
+          showLoginError('Error verifying admin role.');
+        }
+      } else {
+        showLoginPage();
+      }
+      hideLoading();
+    });
+  } else {
+    // Demo mode - show login page directly
+    initDemoData();
+    showLoginPage();
+    hideLoading();
+  }
+}
+
+// ===== THEME =====
+function initTheme() {
+  const saved = localStorage.getItem('adminTheme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme','dark');
+  }
+  updateThemeIcon();
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('adminTheme', next);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.innerHTML = isDark ? '&#x2600;' : '&#x1F319;';
+}
+
+// ===== AUTH =====
+function showLoginPage() {
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loadingPage').style.display = 'none';
+}
+
+function showAdminPanel() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+  document.getElementById('loadingPage').style.display = 'none';
+  document.getElementById('adminName').textContent = currentUser.name || 'Admin';
+  document.getElementById('adminAvatar').textContent = (currentUser.name || 'A').charAt(0).toUpperCase();
+  // Add demo mode banner if not connected to Firebase
+  addDemoBanner();
+  loadAllData();
+}
+
+function addDemoBanner() {
+  if (!FIREBASE_CONNECTED) {
+    const existing = document.getElementById('demoBanner');
+    if (!existing) {
+      const banner = document.createElement('div');
+      banner.id = 'demoBanner';
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;text-align:center;padding:8px 16px;font-size:0.82rem;font-weight:600;letter-spacing:0.3px;box-shadow:0 2px 8px rgba(245,158,11,0.3);';
+      banner.innerHTML = '\u26A0\uFE0F Demo Mode &mdash; Add Firebase config to connect real database &nbsp;|&nbsp; Login: admin@arithmetic.com / admin123';
+      document.body.appendChild(banner);
+      // Push content down
+      document.body.style.paddingTop = '36px';
+    }
+  }
+}
+
+function hideLoading() {
+  document.getElementById('loadingPage').style.display = 'none';
+}
+
+function showLoginError(msg) {
+  document.getElementById('loginError').textContent = msg;
+}
+
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Please enter email and password'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+  try {
+    if (FIREBASE_CONNECTED) {
+      await auth.signInWithEmailAndPassword(email, password);
+    } else {
+      // Demo mode authentication
+      if (email === 'admin@arithmetic.com' && password === 'admin123') {
+        currentUser = { uid: 'admin_uid', name: 'Admin', email: 'admin@arithmetic.com', role: 'admin' };
+        showAdminPanel();
+      } else {
+        errEl.textContent = 'Invalid credentials. Demo: admin@arithmetic.com / admin123';
+      }
+    }
+  } catch(e) {
+    errEl.textContent = e.message.replace('Firebase: ','').replace(/\(auth\/.*\)/,'').trim() || 'Login failed';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Sign In';
+}
+
+function handleLogout() {
+  if (confirm('Are you sure you want to logout?')) {
+    if (FIREBASE_CONNECTED) {
+      auth.signOut();
+    } else {
+      currentUser = null;
+      showLoginPage();
+    }
+  }
+}
+
+// Enter key login
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') {
+    handleLogin();
+  }
+});
+
+// ===== NAVIGATION =====
+function navigateTo(page) {
+  currentPage = page;
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+  const titles = {
+    dashboard:'Dashboard', tests:'Manage Tests', pdfs:'Manage PDFs', courses:'Manage Courses',
+    users:'Manage Users', payments:'Payment Approvals', banners:'Banner Management',
+    notifications:'Notifications', settings:'App Settings', leaderboard:'Leaderboard'
+  };
+  document.getElementById('topbarTitle').textContent = titles[page] || 'Dashboard';
+  closeSidebar();
+  // Refresh data for the page
+  if (page === 'leaderboard') renderLeaderboard();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+// ===== LOAD DATA =====
+function loadAllData() {
+  if (FIREBASE_CONNECTED) {
+    // Listen to all main collections
+    db.ref('users').on('value', snap => {
+      allUsers = snap.val() || {};
+      if (currentPage === 'dashboard') renderDashboard();
+      if (currentPage === 'users') renderUsers();
+      if (currentPage === 'notifications') populateNotifTargets();
+    });
+
+    db.ref('tests').on('value', snap => {
+      allTests = snap.val() || {};
+      if (currentPage === 'dashboard') renderDashboard();
+      if (currentPage === 'tests') renderTests();
+    });
+
+    db.ref('questions').on('value', snap => {
+      allQuestions = snap.val() || {};
+      if (currentPage === 'tests') renderTests();
+    });
+
+    db.ref('pdfs').on('value', snap => {
+      allPdfs = snap.val() || {};
+      if (currentPage === 'dashboard') renderDashboard();
+      if (currentPage === 'pdfs') renderPdfs();
+    });
+
+    db.ref('courses').on('value', snap => {
+      allCourses = snap.val() || {};
+      if (currentPage === 'dashboard') renderDashboard();
+      if (currentPage === 'courses') renderCourses();
+    });
+
+    db.ref('videos').on('value', snap => {
+      allVideos = snap.val() || {};
+      if (currentPage === 'courses') renderCourses();
+    });
+
+    db.ref('payments').on('value', snap => {
+      allPayments = snap.val() || {};
+      updatePaymentBadge();
+      if (currentPage === 'dashboard') renderDashboard();
+      if (currentPage === 'payments') renderPayments();
+    });
+
+    db.ref('purchases').on('value', snap => {
+      allPurchases = snap.val() || {};
+    });
+
+    db.ref('banners').on('value', snap => {
+      allBanners = snap.val() || {};
+      if (currentPage === 'banners') renderBanners();
+    });
+
+    db.ref('notifications').on('value', snap => {
+      allNotifications = snap.val() || {};
+      if (currentPage === 'notifications') renderNotifHistory();
+    });
+
+    db.ref('testResults').on('value', snap => {
+      allTestResults = snap.val() || {};
+      if (currentPage === 'leaderboard') renderLeaderboard();
+    });
+
+    db.ref('settings').on('value', snap => {
+      allSettings = snap.val() || {};
+      if (currentPage === 'settings') renderSettings();
+      checkInitialData();
+    });
+  } else {
+    // Demo mode - load from localStorage
+    allUsers = getLocalData('users') || DEMO_DATA.users;
+    allTests = getLocalData('tests') || DEMO_DATA.tests;
+    allQuestions = getLocalData('questions') || DEMO_DATA.questions;
+    allPdfs = getLocalData('pdfs') || DEMO_DATA.pdfs;
+    allCourses = getLocalData('courses') || DEMO_DATA.courses;
+    allVideos = getLocalData('videos') || DEMO_DATA.videos;
+    allPayments = getLocalData('payments') || DEMO_DATA.payments;
+    allPurchases = getLocalData('purchases') || DEMO_DATA.purchases;
+    allBanners = getLocalData('banners') || DEMO_DATA.banners;
+    allNotifications = getLocalData('notifications') || DEMO_DATA.notifications;
+    allTestResults = getLocalData('testResults') || DEMO_DATA.testResults;
+    allSettings = getLocalData('settings') || DEMO_DATA.settings;
+    renderDashboard();
+    renderTests();
+    renderPdfs();
+    renderCourses();
+    renderUsers();
+    renderPayments();
+    renderBanners();
+    renderNotifHistory();
+    renderSettings();
+    renderLeaderboard();
+    updatePaymentBadge();
+    populateNotifTargets();
+  }
+}
+
+function saveDemoData() {
+  if (!FIREBASE_CONNECTED) {
+    setLocalData('users', allUsers);
+    setLocalData('tests', allTests);
+    setLocalData('questions', allQuestions);
+    setLocalData('pdfs', allPdfs);
+    setLocalData('courses', allCourses);
+    setLocalData('videos', allVideos);
+    setLocalData('payments', allPayments);
+    setLocalData('purchases', allPurchases);
+    setLocalData('banners', allBanners);
+    setLocalData('notifications', allNotifications);
+    setLocalData('testResults', allTestResults);
+    setLocalData('settings', allSettings);
+  }
+}
+
+// ===== INITIAL DATA SEED =====
+async function checkInitialData() {
+  if (!FIREBASE_CONNECTED) return; // Skip in demo mode
+  if (initialDataSeeded) return;
+  // Check if data already exists
+  const hasData = Object.keys(allTests).length > 0 || Object.keys(allSettings).length > 0;
+  if (hasData) { initialDataSeeded = true; return; }
+  initialDataSeeded = true;
+
+  try {
+    // Settings
+    await db.ref('settings').set({
+      upi_id: { value: 'arithmetic@upi' },
+      app_name: { value: 'Arithmetic Computer Education' },
+      contact: { value: '+91 99999 99999' },
+      youtube: { value: 'https://youtube.com/@arithmetic' },
+      qr_url: { value: '' }
+    });
+
+    // Banners
+    const bannerRef = db.ref('banners');
+    await bannerRef.push({ title:'Welcome to Arithmetic!', imageUrl:'https://placehold.co/800x300/10b981/ffffff?text=Arithmetic+Education', link:'', order:1, isActive:true, createdAt: Date.now() });
+    await bannerRef.push({ title:'Free Computer Test', imageUrl:'https://placehold.co/800x300/14b8a6/ffffff?text=Free+Test+Available', link:'', order:2, isActive:true, createdAt: Date.now() });
+    await bannerRef.push({ title:'Premium Courses', imageUrl:'https://placehold.co/800x300/059669/ffffff?text=Premium+Courses', link:'', order:3, isActive:true, createdAt: Date.now() });
+
+    // Free Test
+    const testRef1 = db.ref('tests').push();
+    await testRef1.set({ title:'Basic Computer Knowledge', description:'Test your basic computer skills', category:'Computer Basics', isPaid:false, price:0, timeLimit:15, totalMarks:50, isActive:true, createdAt:Date.now() });
+    const qRef = db.ref('questions');
+    const freeQuestions = [
+      { testId:testRef1.key, question:'What does CPU stand for?', optionA:'Central Processing Unit', optionB:'Computer Personal Unit', optionC:'Central Program Utility', optionD:'Computer Processing Utility', correctAns:'A', marks:10, explanation:'CPU stands for Central Processing Unit, the brain of the computer.' },
+      { testId:testRef1.key, question:'Which is an input device?', optionA:'Monitor', optionB:'Printer', optionC:'Keyboard', optionD:'Speaker', correctAns:'C', marks:10, explanation:'Keyboard is an input device used to enter data.' },
+      { testId:testRef1.key, question:'What is RAM?', optionA:'Read Access Memory', optionB:'Random Access Memory', optionC:'Run Application Memory', optionD:'Rapid Access Module', correctAns:'B', marks:10, explanation:'RAM stands for Random Access Memory, a volatile memory.' },
+      { testId:testRef1.key, question:'Which is an operating system?', optionA:'Microsoft Word', optionB:'Google Chrome', optionC:'Windows', optionD:'Photoshop', correctAns:'C', marks:10, explanation:'Windows is a popular operating system by Microsoft.' },
+      { testId:testRef1.key, question:'What does HTTP stand for?', optionA:'HyperText Transfer Protocol', optionB:'High Transfer Text Protocol', optionC:'Hyper Transmission Text Protocol', optionD:'Home Text Transfer Protocol', correctAns:'A', marks:10, explanation:'HTTP stands for HyperText Transfer Protocol used for web.' }
+    ];
+    for (const q of freeQuestions) { await qRef.push(q); }
+
+    // Paid Test
+    const testRef2 = db.ref('tests').push();
+    await testRef2.set({ title:'Advanced Computer Science', description:'Advanced level computer science test', category:'Computer Science', isPaid:true, price:49, timeLimit:30, totalMarks:50, isActive:true, createdAt:Date.now() });
+    const paidQuestions = [
+      { testId:testRef2.key, question:'What is the time complexity of binary search?', optionA:'O(n)', optionB:'O(log n)', optionC:'O(n²)', optionD:'O(1)', correctAns:'B', marks:10, explanation:'Binary search has O(log n) time complexity.' },
+      { testId:testRef2.key, question:'Which data structure uses LIFO?', optionA:'Queue', optionB:'Stack', optionC:'Array', optionD:'Linked List', correctAns:'B', marks:10, explanation:'Stack follows Last In First Out (LIFO) principle.' },
+      { testId:testRef2.key, question:'What is a polymorphism in OOP?', optionA:'Multiple inheritance', optionB:'Same interface different implementation', optionC:'Data hiding', optionD:'Code reuse', correctAns:'B', marks:10, explanation:'Polymorphism allows same interface with different implementations.' },
+      { testId:testRef2.key, question:'Which protocol is used for secure web browsing?', optionA:'HTTP', optionB:'FTP', optionC:'HTTPS', optionD:'SMTP', correctAns:'C', marks:10, explanation:'HTTPS provides encrypted communication for secure browsing.' },
+      { testId:testRef2.key, question:'What is normalization in DBMS?', optionA:'Making data larger', optionB:'Reducing data redundancy', optionC:'Deleting data', optionD:'Copying data', correctAns:'B', marks:10, explanation:'Normalization reduces data redundancy and dependency.' }
+    ];
+    for (const q of paidQuestions) { await qRef.push(q); }
+
+    // Free PDF
+    await db.ref('pdfs').push({ title:'Computer Basics Notes', description:'Free PDF covering basic computer concepts', imageUrl:'https://placehold.co/400x200/10b981/ffffff?text=Computer+Basics', pdfUrl:'https://example.com/basics.pdf', category:'Computer Basics', isPaid:false, price:0, isActive:true, createdAt:Date.now() });
+
+    // Paid PDF
+    await db.ref('pdfs').push({ title:'Advanced Programming Guide', description:'Comprehensive programming guide for advanced learners', imageUrl:'https://placehold.co/400x200/059669/ffffff?text=Programming+Guide', pdfUrl:'https://example.com/advanced.pdf', category:'Programming', isPaid:true, price:99, isActive:true, createdAt:Date.now() });
+
+    // Free Course
+    const courseRef = db.ref('courses').push();
+    await courseRef.set({ title:'Computer Fundamentals', description:'Learn the basics of computers', imageUrl:'https://placehold.co/400x200/14b8a6/ffffff?text=Computer+Fundamentals', category:'Computer Basics', isPaid:false, price:0, isActive:true, createdAt:Date.now() });
+    const vRef = db.ref('videos');
+    await vRef.push({ courseId:courseRef.key, title:'Introduction to Computers', youtubeUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ', order:1 });
+    await vRef.push({ courseId:courseRef.key, title:'Parts of a Computer', youtubeUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ', order:2 });
+
+    showToast('Sample data created successfully!', 'success');
+  } catch(e) {
+    console.error('Error seeding data:', e);
+  }
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  const userCount = Object.keys(allUsers).length;
+  const testCount = Object.keys(allTests).length;
+  const pdfCount = Object.keys(allPdfs).length;
+  const courseCount = Object.keys(allCourses).length;
+
+  let totalRevenue = 0;
+  let pendingCount = 0;
+  Object.values(allPayments).forEach(p => {
+    if (p.status === 'approved') totalRevenue += Number(p.amount) || 0;
+    if (p.status === 'pending') pendingCount++;
+  });
+
+  document.getElementById('statUsers').textContent = userCount;
+  document.getElementById('statTests').textContent = testCount;
+  document.getElementById('statPdfs').textContent = pdfCount;
+  document.getElementById('statCourses').textContent = courseCount;
+  document.getElementById('statRevenue').textContent = '\u20B9' + totalRevenue;
+  document.getElementById('statPending').textContent = pendingCount;
+
+  // Recent Payments
+  const rpBody = document.querySelector('#recentPaymentsTable tbody');
+  const recentPayments = Object.entries(allPayments).sort((a,b) => (b[1].createdAt||0) - (a[1].createdAt||0)).slice(0,5);
+  rpBody.innerHTML = recentPayments.length === 0 ? '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">No payments yet</td></tr>' :
+    recentPayments.map(([id,p]) => {
+      const userName = getUserName(p.userId);
+      return `<tr><td>${esc(userName)}</td><td>\u20B9${p.amount||0}</td><td><span class="badge-status badge-${p.status}">${p.status}</span></td></tr>`;
+    }).join('');
+
+  // Recent Users
+  const ruBody = document.querySelector('#recentUsersTable tbody');
+  const recentUsers = Object.entries(allUsers).sort((a,b) => (b[1].createdAt||0) - (a[1].createdAt||0)).slice(0,5);
+  ruBody.innerHTML = recentUsers.length === 0 ? '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">No users yet</td></tr>' :
+    recentUsers.map(([id,u]) => {
+      return `<tr><td>${esc(u.name||'N/A')}</td><td>${esc(u.email||'')}</td><td>${formatDate(u.createdAt)}</td></tr>`;
+    }).join('');
+}
+
+// ===== TESTS =====
+function renderTests() {
+  const container = document.getElementById('testsList');
+  const testEntries = Object.entries(allTests);
+  if (testEntries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F4DD;</div><p>No tests yet. Add your first test!</p></div>';
+    return;
+  }
+  container.innerHTML = testEntries.map(([id, t]) => {
+    const qCount = Object.values(allQuestions).filter(q => q.testId === id).length;
+    return `
+    <div class="glass-card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h3 style="font-size:1rem;font-weight:600;margin-bottom:4px;">${esc(t.title)}</h3>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">${esc(t.description||'')}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span class="badge-status badge-${t.isPaid?'paid':'free'}">${t.isPaid?'\u20B9'+t.price:'Free'}</span>
+            <span class="badge-status badge-info">${esc(t.category||'General')}</span>
+            <span class="badge-status badge-${t.isActive?'active':'inactive'}">${t.isActive?'Active':'Inactive'}</span>
+            <span style="font-size:0.75rem;color:var(--text-muted);">${qCount} questions</span>
+            <span style="font-size:0.75rem;color:var(--text-muted);">${t.timeLimit||0} min</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="toggleTestActive('${id}')">${t.isActive?'Deactivate':'Activate'}</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddQuestionModal('${id}')">&#x2795; Add Question</button>
+          <button class="btn btn-outline btn-sm" onclick="viewTestQuestions('${id}')">&#x1F441; View Questions</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTest('${id}')">&#x1F5D1;</button>
+        </div>
+      </div>
+      <div id="questions-${id}" style="display:none;margin-top:16px;"></div>
+    </div>`;
+  }).join('');
+}
+
+function openAddTestModal() {
+  openModal(`
+    <div class="modal-header"><h3>Add New Test</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Test Title</label><input type="text" id="testTitle" placeholder="Enter test title"></div>
+    <div class="form-group"><label>Description</label><textarea id="testDesc" placeholder="Test description"></textarea></div>
+    <div class="form-group"><label>Category</label>
+      <select id="testCategory">
+        <option value="Computer Basics">Computer Basics</option>
+        <option value="Computer Science">Computer Science</option>
+        <option value="Programming">Programming</option>
+        <option value="MS Office">MS Office</option>
+        <option value="Internet">Internet</option>
+        <option value="Typing">Typing</option>
+        <option value="General">General</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="toggle-group">
+        <label class="toggle-switch"><input type="checkbox" id="testIsPaid" onchange="document.getElementById('testPriceGroup').style.display=this.checked?'block':'none'"><span class="toggle-slider"></span></label>
+        <span style="font-size:0.85rem;">Paid Test</span>
+      </div>
+    </div>
+    <div class="form-group" id="testPriceGroup" style="display:none;"><label>Price (\u20B9)</label><input type="number" id="testPrice" placeholder="e.g. 49" min="0"></div>
+    <div class="form-group"><label>Time Limit (minutes)</label><input type="number" id="testTimeLimit" placeholder="e.g. 30" min="1" value="30"></div>
+    <div class="form-group"><label>Total Marks</label><input type="number" id="testTotalMarks" placeholder="e.g. 100" min="1" value="100"></div>
+    <button class="btn btn-primary" onclick="createTest()" style="width:100%;">Create Test</button>
+  `);
+}
+
+async function createTest() {
+  const title = document.getElementById('testTitle').value.trim();
+  if (!title) { showToast('Please enter test title', 'error'); return; }
+  const isPaid = document.getElementById('testIsPaid').checked;
+  const price = isPaid ? Number(document.getElementById('testPrice').value) || 0 : 0;
+  const data = {
+    title,
+    description: document.getElementById('testDesc').value.trim(),
+    category: document.getElementById('testCategory').value,
+    isPaid,
+    price,
+    timeLimit: Number(document.getElementById('testTimeLimit').value) || 30,
+    totalMarks: Number(document.getElementById('testTotalMarks').value) || 100,
+    isActive: true,
+    createdAt: Date.now()
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('tests').push(data);
+    } else {
+      const id = 'test_' + Date.now();
+      allTests[id] = data;
+      saveDemoData();
+      renderTests();
+      renderDashboard();
+    }
+    closeModal();
+    showToast('Test created successfully!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function deleteTest(id) {
+  if (!confirm('Delete this test and all its questions?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('tests/' + id).remove();
+      const qSnap = await db.ref('questions').orderByChild('testId').equalTo(id).once('value');
+      if (qSnap.exists()) {
+        const updates = {};
+        Object.keys(qSnap.val()).forEach(k => updates[k] = null);
+        await db.ref('questions').update(updates);
+      }
+    } else {
+      delete allTests[id];
+      Object.keys(allQuestions).forEach(k => { if (allQuestions[k].testId === id) delete allQuestions[k]; });
+      saveDemoData();
+      renderTests();
+      renderDashboard();
+    }
+    showToast('Test deleted', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function toggleTestActive(id) {
+  const test = allTests[id];
+  if (!test) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('tests/' + id + '/isActive').set(!test.isActive);
+    } else {
+      allTests[id].isActive = !allTests[id].isActive;
+      saveDemoData();
+      renderTests();
+    }
+    showToast(test.isActive ? 'Test deactivated' : 'Test activated', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function openAddQuestionModal(testId) {
+  openModal(`
+    <div class="modal-header"><h3>Add Question to: ${esc(allTests[testId]?.title||'')}</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Question</label><textarea id="qText" placeholder="Enter the question"></textarea></div>
+    <div class="form-group"><label>Option A</label><input type="text" id="qOptA" placeholder="Option A"></div>
+    <div class="form-group"><label>Option B</label><input type="text" id="qOptB" placeholder="Option B"></div>
+    <div class="form-group"><label>Option C</label><input type="text" id="qOptC" placeholder="Option C"></div>
+    <div class="form-group"><label>Option D</label><input type="text" id="qOptD" placeholder="Option D"></div>
+    <div class="form-group"><label>Correct Answer</label>
+      <div class="radio-group">
+        <label><input type="radio" name="correctAns" value="A" checked> A</label>
+        <label><input type="radio" name="correctAns" value="B"> B</label>
+        <label><input type="radio" name="correctAns" value="C"> C</label>
+        <label><input type="radio" name="correctAns" value="D"> D</label>
+      </div>
+    </div>
+    <div class="form-group"><label>Marks</label><input type="number" id="qMarks" placeholder="e.g. 10" min="1" value="10"></div>
+    <div class="form-group"><label>Explanation</label><textarea id="qExplanation" placeholder="Explanation (optional)"></textarea></div>
+    <input type="hidden" id="qTestId" value="${testId}">
+    <button class="btn btn-primary" onclick="addQuestion()" style="width:100%;">Add Question</button>
+  `);
+}
+
+async function addQuestion() {
+  const testId = document.getElementById('qTestId').value;
+  const question = document.getElementById('qText').value.trim();
+  if (!question) { showToast('Please enter the question', 'error'); return; }
+  const optA = document.getElementById('qOptA').value.trim();
+  const optB = document.getElementById('qOptB').value.trim();
+  const optC = document.getElementById('qOptC').value.trim();
+  const optD = document.getElementById('qOptD').value.trim();
+  if (!optA || !optB || !optC || !optD) { showToast('Please fill all options', 'error'); return; }
+  const correctAns = document.querySelector('input[name="correctAns"]:checked').value;
+  const data = {
+    testId,
+    question,
+    optionA: optA,
+    optionB: optB,
+    optionC: optC,
+    optionD: optD,
+    correctAns,
+    marks: Number(document.getElementById('qMarks').value) || 10,
+    explanation: document.getElementById('qExplanation').value.trim()
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('questions').push(data);
+    } else {
+      const id = 'q_' + Date.now();
+      allQuestions[id] = data;
+      saveDemoData();
+      renderTests();
+    }
+    closeModal();
+    showToast('Question added!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function viewTestQuestions(testId) {
+  const container = document.getElementById('questions-' + testId);
+  if (!container) return;
+  if (container.style.display === 'block') { container.style.display = 'none'; return; }
+  const questions = Object.entries(allQuestions).filter(([id,q]) => q.testId === testId);
+  if (questions.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>No questions added yet</p></div>';
+  } else {
+    container.innerHTML = questions.map(([id, q]) => `
+      <div class="question-card">
+        <div class="q-text">${esc(q.question)}</div>
+        <div class="q-options">A. ${esc(q.optionA)} &nbsp;|&nbsp; B. ${esc(q.optionB)} &nbsp;|&nbsp; C. ${esc(q.optionC)} &nbsp;|&nbsp; D. ${esc(q.optionD)}</div>
+        <div class="q-correct">Correct: ${q.correctAns} &nbsp; (${q.marks} marks)</div>
+        ${q.explanation ? '<div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">Explanation: '+esc(q.explanation)+'</div>' : ''}
+        <div class="q-actions"><button class="btn btn-danger btn-sm" onclick="deleteQuestion('${id}')">Delete</button></div>
+      </div>
+    `).join('');
+  }
+  container.style.display = 'block';
+}
+
+async function deleteQuestion(id) {
+  if (!confirm('Delete this question?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('questions/' + id).remove();
+    } else {
+      delete allQuestions[id];
+      saveDemoData();
+      renderTests();
+    }
+    showToast('Question deleted', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ===== PDFs =====
+function renderPdfs() {
+  const container = document.getElementById('pdfsList');
+  const entries = Object.entries(allPdfs);
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F4D1;</div><p>No PDFs yet. Upload your first PDF!</p></div>';
+    return;
+  }
+  container.innerHTML = entries.map(([id, p]) => `
+    <div class="glass-card" style="margin-bottom:12px;">
+      <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+        ${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="img-preview" onerror="this.style.display='none'">` : ''}
+        <div style="flex:1;min-width:200px;">
+          <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:4px;">${esc(p.title)}</h3>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:6px;">${esc(p.description||'')}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge-status badge-${p.isPaid?'paid':'free'}">${p.isPaid?'\u20B9'+p.price:'Free'}</span>
+            <span class="badge-status badge-info">${esc(p.category||'General')}</span>
+            <span class="badge-status badge-${p.isActive?'active':'inactive'}">${p.isActive?'Active':'Inactive'}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="togglePdfActive('${id}')">${p.isActive?'Deactivate':'Activate'}</button>
+          <button class="btn btn-outline btn-sm" onclick="editPdf('${id}')">&#x270F;</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePdf('${id}')">&#x1F5D1;</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddPdfModal() {
+  openModal(`
+    <div class="modal-header"><h3>Add PDF</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Title</label><input type="text" id="pdfTitle" placeholder="PDF title"></div>
+    <div class="form-group"><label>Description</label><textarea id="pdfDesc" placeholder="PDF description"></textarea></div>
+    <div class="form-group"><label>Cover Image URL</label><input type="text" id="pdfImageUrl" placeholder="https://..."></div>
+    <div class="form-group"><label>PDF File URL</label><input type="text" id="pdfPdfUrl" placeholder="https://..."></div>
+    <div class="form-group"><label>Category</label>
+      <select id="pdfCategory">
+        <option value="Computer Basics">Computer Basics</option>
+        <option value="Programming">Programming</option>
+        <option value="MS Office">MS Office</option>
+        <option value="Internet">Internet</option>
+        <option value="General">General</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="toggle-group">
+        <label class="toggle-switch"><input type="checkbox" id="pdfIsPaid" onchange="document.getElementById('pdfPriceGroup').style.display=this.checked?'block':'none'"><span class="toggle-slider"></span></label>
+        <span style="font-size:0.85rem;">Paid PDF</span>
+      </div>
+    </div>
+    <div class="form-group" id="pdfPriceGroup" style="display:none;"><label>Price (\u20B9)</label><input type="number" id="pdfPrice" placeholder="e.g. 49" min="0"></div>
+    <button class="btn btn-primary" onclick="createPdf()" style="width:100%;">Add PDF</button>
+  `);
+}
+
+async function createPdf(editId) {
+  const title = document.getElementById('pdfTitle').value.trim();
+  if (!title) { showToast('Please enter PDF title', 'error'); return; }
+  const isPaid = document.getElementById('pdfIsPaid').checked;
+  const price = isPaid ? Number(document.getElementById('pdfPrice').value) || 0 : 0;
+  const data = {
+    title,
+    description: document.getElementById('pdfDesc').value.trim(),
+    imageUrl: document.getElementById('pdfImageUrl').value.trim(),
+    pdfUrl: document.getElementById('pdfPdfUrl').value.trim(),
+    category: document.getElementById('pdfCategory').value,
+    isPaid,
+    price,
+    isActive: true,
+    createdAt: Date.now()
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      if (editId) {
+        await db.ref('pdfs/' + editId).update(data);
+      } else {
+        await db.ref('pdfs').push(data);
+      }
+    } else {
+      if (editId) {
+        allPdfs[editId] = { ...allPdfs[editId], ...data };
+      } else {
+        allPdfs['pdf_' + Date.now()] = data;
+      }
+      saveDemoData();
+      renderPdfs();
+      renderDashboard();
+    }
+    closeModal();
+    showToast(editId ? 'PDF updated!' : 'PDF added!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function editPdf(id) {
+  const p = allPdfs[id];
+  if (!p) return;
+  openModal(`
+    <div class="modal-header"><h3>Edit PDF</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Title</label><input type="text" id="pdfTitle" value="${esc(p.title||'')}"></div>
+    <div class="form-group"><label>Description</label><textarea id="pdfDesc">${esc(p.description||'')}</textarea></div>
+    <div class="form-group"><label>Cover Image URL</label><input type="text" id="pdfImageUrl" value="${esc(p.imageUrl||'')}"></div>
+    <div class="form-group"><label>PDF File URL</label><input type="text" id="pdfPdfUrl" value="${esc(p.pdfUrl||'')}"></div>
+    <div class="form-group"><label>Category</label>
+      <select id="pdfCategory">
+        <option value="Computer Basics" ${p.category==='Computer Basics'?'selected':''}>Computer Basics</option>
+        <option value="Programming" ${p.category==='Programming'?'selected':''}>Programming</option>
+        <option value="MS Office" ${p.category==='MS Office'?'selected':''}>MS Office</option>
+        <option value="Internet" ${p.category==='Internet'?'selected':''}>Internet</option>
+        <option value="General" ${p.category==='General'?'selected':''}>General</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="toggle-group">
+        <label class="toggle-switch"><input type="checkbox" id="pdfIsPaid" ${p.isPaid?'checked':''} onchange="document.getElementById('pdfPriceGroup').style.display=this.checked?'block':'none'"><span class="toggle-slider"></span></label>
+        <span style="font-size:0.85rem;">Paid PDF</span>
+      </div>
+    </div>
+    <div class="form-group" id="pdfPriceGroup" style="display:${p.isPaid?'block':'none'};"><label>Price (\u20B9)</label><input type="number" id="pdfPrice" value="${p.price||0}" min="0"></div>
+    <button class="btn btn-primary" onclick="createPdf('${id}')" style="width:100%;">Update PDF</button>
+  `);
+}
+
+async function deletePdf(id) {
+  if (!confirm('Delete this PDF?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('pdfs/' + id).remove();
+    } else {
+      delete allPdfs[id];
+      saveDemoData();
+      renderPdfs();
+      renderDashboard();
+    }
+    showToast('PDF deleted', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function togglePdfActive(id) {
+  const p = allPdfs[id];
+  if (!p) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('pdfs/' + id + '/isActive').set(!p.isActive);
+    } else {
+      allPdfs[id].isActive = !allPdfs[id].isActive;
+      saveDemoData();
+      renderPdfs();
+    }
+    showToast(p.isActive ? 'PDF deactivated' : 'PDF activated', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ===== COURSES =====
+function renderCourses() {
+  const container = document.getElementById('coursesList');
+  const entries = Object.entries(allCourses);
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F3AC;</div><p>No courses yet. Add your first course!</p></div>';
+    return;
+  }
+  container.innerHTML = entries.map(([id, c]) => {
+    const vCount = Object.values(allVideos).filter(v => v.courseId === id).length;
+    return `
+    <div class="glass-card" style="margin-bottom:16px;">
+      <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+        ${c.imageUrl ? `<img src="${esc(c.imageUrl)}" class="img-preview" style="width:80px;height:50px;" onerror="this.style.display='none'">` : ''}
+        <div style="flex:1;min-width:200px;">
+          <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:4px;">${esc(c.title)}</h3>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:6px;">${esc(c.description||'')}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge-status badge-${c.isPaid?'paid':'free'}">${c.isPaid?'\u20B9'+c.price:'Free'}</span>
+            <span class="badge-status badge-info">${esc(c.category||'General')}</span>
+            <span class="badge-status badge-${c.isActive?'active':'inactive'}">${c.isActive?'Active':'Inactive'}</span>
+            <span style="font-size:0.75rem;color:var(--text-muted);">${vCount} videos</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="toggleCourseActive('${id}')">${c.isActive?'Deactivate':'Activate'}</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddVideoModal('${id}')">&#x2795; Video</button>
+          <button class="btn btn-outline btn-sm" onclick="viewCourseVideos('${id}')">&#x1F3AC; Videos</button>
+          <button class="btn btn-outline btn-sm" onclick="editCourse('${id}')">&#x270F;</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCourse('${id}')">&#x1F5D1;</button>
+        </div>
+      </div>
+      <div id="videos-${id}" style="display:none;margin-top:16px;"></div>
+    </div>`;
+  }).join('');
+}
+
+function openAddCourseModal() {
+  openModal(`
+    <div class="modal-header"><h3>Add Course</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Course Title</label><input type="text" id="courseTitle" placeholder="Enter course title"></div>
+    <div class="form-group"><label>Description</label><textarea id="courseDesc" placeholder="Course description"></textarea></div>
+    <div class="form-group"><label>Cover Image URL</label><input type="text" id="courseImageUrl" placeholder="https://..."></div>
+    <div class="form-group"><label>Category</label>
+      <select id="courseCategory">
+        <option value="Computer Basics">Computer Basics</option>
+        <option value="Programming">Programming</option>
+        <option value="MS Office">MS Office</option>
+        <option value="Internet">Internet</option>
+        <option value="General">General</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="toggle-group">
+        <label class="toggle-switch"><input type="checkbox" id="courseIsPaid" onchange="document.getElementById('coursePriceGroup').style.display=this.checked?'block':'none'"><span class="toggle-slider"></span></label>
+        <span style="font-size:0.85rem;">Paid Course</span>
+      </div>
+    </div>
+    <div class="form-group" id="coursePriceGroup" style="display:none;"><label>Price (\u20B9)</label><input type="number" id="coursePrice" placeholder="e.g. 199" min="0"></div>
+    <button class="btn btn-primary" onclick="createCourse()" style="width:100%;">Create Course</button>
+  `);
+}
+
+async function createCourse(editId) {
+  const title = document.getElementById('courseTitle').value.trim();
+  if (!title) { showToast('Please enter course title', 'error'); return; }
+  const isPaid = document.getElementById('courseIsPaid').checked;
+  const price = isPaid ? Number(document.getElementById('coursePrice').value) || 0 : 0;
+  const data = {
+    title,
+    description: document.getElementById('courseDesc').value.trim(),
+    imageUrl: document.getElementById('courseImageUrl').value.trim(),
+    category: document.getElementById('courseCategory').value,
+    isPaid,
+    price,
+    isActive: true,
+    createdAt: Date.now()
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      if (editId) {
+        await db.ref('courses/' + editId).update(data);
+      } else {
+        await db.ref('courses').push(data);
+      }
+    } else {
+      if (editId) {
+        allCourses[editId] = { ...allCourses[editId], ...data };
+      } else {
+        allCourses['course_' + Date.now()] = data;
+      }
+      saveDemoData();
+      renderCourses();
+      renderDashboard();
+    }
+    closeModal();
+    showToast(editId ? 'Course updated!' : 'Course created!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function editCourse(id) {
+  const c = allCourses[id];
+  if (!c) return;
+  openModal(`
+    <div class="modal-header"><h3>Edit Course</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Course Title</label><input type="text" id="courseTitle" value="${esc(c.title||'')}"></div>
+    <div class="form-group"><label>Description</label><textarea id="courseDesc">${esc(c.description||'')}</textarea></div>
+    <div class="form-group"><label>Cover Image URL</label><input type="text" id="courseImageUrl" value="${esc(c.imageUrl||'')}"></div>
+    <div class="form-group"><label>Category</label>
+      <select id="courseCategory">
+        <option value="Computer Basics" ${c.category==='Computer Basics'?'selected':''}>Computer Basics</option>
+        <option value="Programming" ${c.category==='Programming'?'selected':''}>Programming</option>
+        <option value="MS Office" ${c.category==='MS Office'?'selected':''}>MS Office</option>
+        <option value="Internet" ${c.category==='Internet'?'selected':''}>Internet</option>
+        <option value="General" ${c.category==='General'?'selected':''}>General</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="toggle-group">
+        <label class="toggle-switch"><input type="checkbox" id="courseIsPaid" ${c.isPaid?'checked':''} onchange="document.getElementById('coursePriceGroup').style.display=this.checked?'block':'none'"><span class="toggle-slider"></span></label>
+        <span style="font-size:0.85rem;">Paid Course</span>
+      </div>
+    </div>
+    <div class="form-group" id="coursePriceGroup" style="display:${c.isPaid?'block':'none'};"><label>Price (\u20B9)</label><input type="number" id="coursePrice" value="${c.price||0}" min="0"></div>
+    <button class="btn btn-primary" onclick="createCourse('${id}')" style="width:100%;">Update Course</button>
+  `);
+}
+
+async function deleteCourse(id) {
+  if (!confirm('Delete this course and all its videos?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('courses/' + id).remove();
+      const vSnap = await db.ref('videos').orderByChild('courseId').equalTo(id).once('value');
+      if (vSnap.exists()) {
+        const updates = {};
+        Object.keys(vSnap.val()).forEach(k => updates[k] = null);
+        await db.ref('videos').update(updates);
+      }
+    } else {
+      delete allCourses[id];
+      Object.keys(allVideos).forEach(k => { if (allVideos[k].courseId === id) delete allVideos[k]; });
+      saveDemoData();
+      renderCourses();
+      renderDashboard();
+    }
+    showToast('Course deleted', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function toggleCourseActive(id) {
+  const c = allCourses[id];
+  if (!c) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('courses/' + id + '/isActive').set(!c.isActive);
+    } else {
+      allCourses[id].isActive = !allCourses[id].isActive;
+      saveDemoData();
+      renderCourses();
+    }
+    showToast(c.isActive ? 'Course deactivated' : 'Course activated', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function openAddVideoModal(courseId) {
+  openModal(`
+    <div class="modal-header"><h3>Add Video to: ${esc(allCourses[courseId]?.title||'')}</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Video Title</label><input type="text" id="videoTitle" placeholder="Enter video title"></div>
+    <div class="form-group"><label>YouTube URL</label><input type="text" id="videoUrl" placeholder="https://youtube.com/watch?v=..."></div>
+    <div class="form-group"><label>Order</label><input type="number" id="videoOrder" placeholder="1" min="1" value="1"></div>
+    <input type="hidden" id="videoCourseId" value="${courseId}">
+    <button class="btn btn-primary" onclick="addVideo()" style="width:100%;">Add Video</button>
+  `);
+}
+
+async function addVideo() {
+  const courseId = document.getElementById('videoCourseId').value;
+  const title = document.getElementById('videoTitle').value.trim();
+  if (!title) { showToast('Please enter video title', 'error'); return; }
+  const data = {
+    courseId,
+    title,
+    youtubeUrl: document.getElementById('videoUrl').value.trim(),
+    order: Number(document.getElementById('videoOrder').value) || 1
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('videos').push(data);
+    } else {
+      allVideos['v_' + Date.now()] = data;
+      saveDemoData();
+      renderCourses();
+    }
+    closeModal();
+    showToast('Video added!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function viewCourseVideos(courseId) {
+  const container = document.getElementById('videos-' + courseId);
+  if (!container) return;
+  if (container.style.display === 'block') { container.style.display = 'none'; return; }
+  const videos = Object.entries(allVideos).filter(([id,v]) => v.courseId === courseId).sort((a,b) => (a[1].order||0) - (b[1].order||0));
+  if (videos.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>No videos added yet</p></div>';
+  } else {
+    container.innerHTML = videos.map(([id, v]) => `
+      <div class="video-item">
+        <div class="v-order">${v.order||1}</div>
+        <div class="v-title">${esc(v.title)}</div>
+        <div class="v-actions">
+          <a href="${esc(v.youtubeUrl||'')}" target="_blank" class="btn btn-outline btn-sm">&#x1F517;</a>
+          <button class="btn btn-danger btn-sm" onclick="deleteVideo('${id}')">&#x1F5D1;</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  container.style.display = 'block';
+}
+
+async function deleteVideo(id) {
+  if (!confirm('Delete this video?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('videos/' + id).remove();
+    } else {
+      delete allVideos[id];
+      saveDemoData();
+      renderCourses();
+    }
+    showToast('Video deleted', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ===== USERS =====
+function renderUsers() {
+  const tbody = document.querySelector('#usersTable tbody');
+  const entries = Object.entries(allUsers);
+  if (entries.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">No users yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = entries.map(([id, u]) => `
+    <tr>
+      <td>${esc(u.name||'N/A')}</td>
+      <td>${esc(u.email||'')}</td>
+      <td><span class="badge-status badge-info">${esc(u.examType||'N/A')}</span></td>
+      <td>${formatDate(u.createdAt)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteUser('${id}','${esc(u.name||'')}')">&#x1F5D1;</button></td>
+    </tr>
+  `).join('');
+}
+
+function filterUsers() {
+  const query = document.getElementById('userSearch').value.toLowerCase();
+  const rows = document.querySelectorAll('#usersTable tbody tr');
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+async function deleteUser(id, name) {
+  if (!confirm(`Delete user "${name}"? This only removes from database.`)) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('users/' + id).remove();
+    } else {
+      delete allUsers[id];
+      saveDemoData();
+      renderUsers();
+      renderDashboard();
+    }
+    showToast('User removed from database', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ===== PAYMENTS =====
+function renderPayments() {
+  let totalRevenue = 0, pendingCount = 0, approvedCount = 0;
+  Object.values(allPayments).forEach(p => {
+    if (p.status === 'approved') { totalRevenue += Number(p.amount) || 0; approvedCount++; }
+    if (p.status === 'pending') pendingCount++;
+  });
+  document.getElementById('payRevenue').textContent = '\u20B9' + totalRevenue;
+  document.getElementById('payPending').textContent = pendingCount;
+  document.getElementById('payApproved').textContent = approvedCount;
+
+  const tbody = document.querySelector('#paymentsTable tbody');
+  const filtered = Object.entries(allPayments).filter(([id,p]) => p.status === currentPaymentTab).sort((a,b) => (b[1].createdAt||0) - (a[1].createdAt||0));
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">No ${currentPaymentTab} payments</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(([id, p]) => {
+    const userName = getUserName(p.userId);
+    const actions = currentPaymentTab === 'pending' ? `
+      <button class="btn btn-approve btn-sm" onclick="approvePayment('${id}')">&#x2705; Approve</button>
+      <button class="btn btn-reject btn-sm" onclick="rejectPayment('${id}')">&#x274C; Reject</button>
+      ${p.screenshotUrl ? `<a href="${esc(p.screenshotUrl)}" target="_blank" class="btn btn-outline btn-sm">&#x1F5BC; View</a>` : ''}
+    ` : currentPaymentTab === 'approved' ? '<span style="color:#10b981;font-size:0.8rem;">&#x2705; Approved</span>' : '<span style="color:#ef4444;font-size:0.8rem;">&#x274C; Rejected</span>';
+    return `
+      <tr>
+        <td>${esc(userName)}</td>
+        <td>\u20B9${p.amount||0}</td>
+        <td><span class="badge-status badge-info">${esc(p.paymentType||'')}</span></td>
+        <td style="font-size:0.75rem;">${esc(p.upiRef||'N/A')}</td>
+        <td style="font-size:0.75rem;">${formatDate(p.createdAt)}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap;">${actions}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function switchPaymentTab(tab, btn) {
+  currentPaymentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPayments();
+}
+
+async function approvePayment(id) {
+  if (!confirm('Approve this payment?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('payments/' + id + '/status').set('approved');
+      const p = allPayments[id];
+      if (p) {
+        await db.ref('purchases').push({
+          userId: p.userId,
+          contentType: p.paymentType,
+          contentId: p.contentId,
+          paymentId: id,
+          createdAt: Date.now()
+        });
+      }
+    } else {
+      allPayments[id].status = 'approved';
+      const p = allPayments[id];
+      if (p) {
+        allPurchases['pur_' + Date.now()] = {
+          userId: p.userId,
+          contentType: p.paymentType,
+          contentId: p.contentId,
+          paymentId: id,
+          createdAt: Date.now()
+        };
+      }
+      saveDemoData();
+      renderPayments();
+      renderDashboard();
+      updatePaymentBadge();
+    }
+    showToast('Payment approved!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function rejectPayment(id) {
+  if (!confirm('Reject this payment?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('payments/' + id + '/status').set('rejected');
+    } else {
+      allPayments[id].status = 'rejected';
+      saveDemoData();
+      renderPayments();
+      renderDashboard();
+      updatePaymentBadge();
+    }
+    showToast('Payment rejected', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function updatePaymentBadge() {
+  const count = Object.values(allPayments).filter(p => p.status === 'pending').length;
+  const badge = document.getElementById('paymentBadge');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'inline';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ===== BANNERS =====
+function renderBanners() {
+  const container = document.getElementById('bannersList');
+  const entries = Object.entries(allBanners).sort((a,b) => (a[1].order||0) - (b[1].order||0));
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#x1F5BC;</div><p>No banners yet. Add your first banner!</p></div>';
+    return;
+  }
+  container.innerHTML = entries.map(([id, b]) => `
+    <div class="glass-card" style="margin-bottom:12px;">
+      <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+        ${b.imageUrl ? `<img src="${esc(b.imageUrl)}" class="banner-preview" style="max-width:200px;" onerror="this.style.display='none'">` : ''}
+        <div style="flex:1;min-width:150px;">
+          <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:4px;">${esc(b.title)}</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:0.75rem;color:var(--text-muted);">Order: ${b.order||1}</span>
+            <span class="badge-status badge-${b.isActive?'active':'inactive'}">${b.isActive?'Active':'Inactive'}</span>
+          </div>
+          ${b.link ? `<a href="${esc(b.link)}" target="_blank" style="font-size:0.75rem;color:var(--emerald-500);word-break:break-all;">${esc(b.link)}</a>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="toggleBannerActive('${id}')">${b.isActive?'Deactivate':'Activate'}</button>
+          <button class="btn btn-outline btn-sm" onclick="editBanner('${id}')">&#x270F;</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBanner('${id}')">&#x1F5D1;</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddBannerModal() {
+  openModal(`
+    <div class="modal-header"><h3>Add Banner</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Title</label><input type="text" id="bannerTitle" placeholder="Banner title"></div>
+    <div class="form-group"><label>Image URL</label><input type="text" id="bannerImageUrl" placeholder="https://..."></div>
+    <div class="form-group"><label>Link URL</label><input type="text" id="bannerLink" placeholder="https://... (optional)"></div>
+    <div class="form-group"><label>Order</label><input type="number" id="bannerOrder" placeholder="1" min="1" value="1"></div>
+    <button class="btn btn-primary" onclick="createBanner()" style="width:100%;">Add Banner</button>
+  `);
+}
+
+async function createBanner(editId) {
+  const title = document.getElementById('bannerTitle').value.trim();
+  if (!title) { showToast('Please enter banner title', 'error'); return; }
+  const data = {
+    title,
+    imageUrl: document.getElementById('bannerImageUrl').value.trim(),
+    link: document.getElementById('bannerLink').value.trim(),
+    order: Number(document.getElementById('bannerOrder').value) || 1,
+    isActive: true,
+    createdAt: Date.now()
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      if (editId) {
+        await db.ref('banners/' + editId).update(data);
+      } else {
+        await db.ref('banners').push(data);
+      }
+    } else {
+      if (editId) {
+        allBanners[editId] = { ...allBanners[editId], ...data };
+      } else {
+        allBanners['banner_' + Date.now()] = data;
+      }
+      saveDemoData();
+      renderBanners();
+    }
+    closeModal();
+    showToast(editId ? 'Banner updated!' : 'Banner added!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function editBanner(id) {
+  const b = allBanners[id];
+  if (!b) return;
+  openModal(`
+    <div class="modal-header"><h3>Edit Banner</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+    <div class="form-group"><label>Title</label><input type="text" id="bannerTitle" value="${esc(b.title||'')}"></div>
+    <div class="form-group"><label>Image URL</label><input type="text" id="bannerImageUrl" value="${esc(b.imageUrl||'')}"></div>
+    <div class="form-group"><label>Link URL</label><input type="text" id="bannerLink" value="${esc(b.link||'')}"></div>
+    <div class="form-group"><label>Order</label><input type="number" id="bannerOrder" value="${b.order||1}" min="1"></div>
+    <button class="btn btn-primary" onclick="createBanner('${id}')" style="width:100%;">Update Banner</button>
+  `);
+}
+
+async function deleteBanner(id) {
+  if (!confirm('Delete this banner?')) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('banners/' + id).remove();
+    } else {
+      delete allBanners[id];
+      saveDemoData();
+      renderBanners();
+    }
+    showToast('Banner deleted', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function toggleBannerActive(id) {
+  const b = allBanners[id];
+  if (!b) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('banners/' + id + '/isActive').set(!b.isActive);
+    } else {
+      allBanners[id].isActive = !allBanners[id].isActive;
+      saveDemoData();
+      renderBanners();
+    }
+    showToast(b.isActive ? 'Banner deactivated' : 'Banner activated', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ===== NOTIFICATIONS =====
+function populateNotifTargets() {
+  const select = document.getElementById('notifTarget');
+  if (!select) return;
+  const current = select.value;
+  select.innerHTML = '<option value="all">All Users</option>';
+  Object.entries(allUsers).forEach(([id, u]) => {
+    select.innerHTML += `<option value="${id}">${esc(u.name||u.email||id)}</option>`;
+  });
+  select.value = current || 'all';
+}
+
+async function sendNotification() {
+  const title = document.getElementById('notifTitle').value.trim();
+  const message = document.getElementById('notifMessage').value.trim();
+  if (!title || !message) { showToast('Please fill title and message', 'error'); return; }
+  const data = {
+    title,
+    message,
+    type: document.getElementById('notifType').value,
+    target: document.getElementById('notifTarget').value,
+    createdAt: Date.now()
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('notifications').push(data);
+    } else {
+      allNotifications['notif_' + Date.now()] = data;
+      saveDemoData();
+      renderNotifHistory();
+    }
+    document.getElementById('notifTitle').value = '';
+    document.getElementById('notifMessage').value = '';
+    showToast('Notification sent!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+function renderNotifHistory() {
+  const container = document.getElementById('notifHistory');
+  const entries = Object.entries(allNotifications).sort((a,b) => (b[1].createdAt||0) - (a[1].createdAt||0)).slice(0,50);
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>No notifications sent yet</p></div>';
+    return;
+  }
+  const typeIcons = { info:'&#x2139;', success:'&#x2705;', warning:'&#x26A0;' };
+  container.innerHTML = entries.map(([id, n]) => `
+    <div class="notif-item">
+      <div class="notif-icon ${n.type||'info'}">${typeIcons[n.type] || typeIcons.info}</div>
+      <div class="notif-content">
+        <div class="notif-title">${esc(n.title)}</div>
+        <div class="notif-msg">${esc(n.message)}</div>
+        <div class="notif-time">${getUserName(n.userId)} &bull; ${formatDate(n.createdAt)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== SETTINGS =====
+function renderSettings() {
+  document.getElementById('setUpiId').value = allSettings.upi_id?.value || '';
+  document.getElementById('setQrUrl').value = allSettings.qr_url?.value || '';
+  document.getElementById('setContact').value = allSettings.contact?.value || '';
+  document.getElementById('setYoutube').value = allSettings.youtube?.value || '';
+  document.getElementById('setAppName').value = allSettings.app_name?.value || 'Arithmetic Computer Education';
+}
+
+async function saveSettings() {
+  const data = {
+    upi_id: { value: document.getElementById('setUpiId').value.trim() },
+    qr_url: { value: document.getElementById('setQrUrl').value.trim() },
+    contact: { value: document.getElementById('setContact').value.trim() },
+    youtube: { value: document.getElementById('setYoutube').value.trim() },
+    app_name: { value: document.getElementById('setAppName').value.trim() }
+  };
+  try {
+    if (FIREBASE_CONNECTED) {
+      await db.ref('settings').set(data);
+    } else {
+      allSettings = data;
+      saveDemoData();
+      renderSettings();
+    }
+    showToast('Settings saved!', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ===== LEADERBOARD =====
+function renderLeaderboard() {
+  // Aggregate scores per user
+  const userScores = {};
+  Object.values(allTestResults).forEach(r => {
+    if (!userScores[r.userId]) {
+      userScores[r.userId] = { totalScore: 0, tests: 0 };
+    }
+    userScores[r.userId].totalScore += Number(r.score) || 0;
+    userScores[r.userId].tests += 1;
+  });
+
+  const sorted = Object.entries(userScores).sort((a,b) => b[1].totalScore - a[1].totalScore);
+
+  // Podium
+  const podium = document.getElementById('leaderboardPodium');
+  if (sorted.length >= 3) {
+    podium.innerHTML = `
+      <div class="podium-item second">
+        <div class="podium-medal">&#x1F948;</div>
+        <div class="podium-name">${esc(getUserName(sorted[1][0]))}</div>
+        <div class="podium-score">${sorted[1][1].totalScore} pts</div>
+      </div>
+      <div class="podium-item first">
+        <div class="podium-medal">&#x1F947;</div>
+        <div class="podium-name">${esc(getUserName(sorted[0][0]))}</div>
+        <div class="podium-score">${sorted[0][1].totalScore} pts</div>
+      </div>
+      <div class="podium-item third">
+        <div class="podium-medal">&#x1F949;</div>
+        <div class="podium-name">${esc(getUserName(sorted[2][0]))}</div>
+        <div class="podium-score">${sorted[2][1].totalScore} pts</div>
+      </div>
+    `;
+  } else if (sorted.length > 0) {
+    podium.innerHTML = sorted.slice(0, Math.min(3, sorted.length)).map((entry, i) => {
+      const medals = ['&#x1F947;','&#x1F948;','&#x1F949;'];
+      const cls = ['first','second','third'];
+      return `<div class="podium-item ${cls[i]}">
+        <div class="podium-medal">${medals[i]}</div>
+        <div class="podium-name">${esc(getUserName(entry[0]))}</div>
+        <div class="podium-score">${entry[1].totalScore} pts</div>
+      </div>`;
+    }).join('');
+  } else {
+    podium.innerHTML = '<div class="empty-state" style="width:100%;"><p>No test results yet</p></div>';
+  }
+
+  // Full list
+  const list = document.getElementById('leaderboardList');
+  if (sorted.length === 0) {
+    list.innerHTML = '<div class="empty-state"><p>No test results to display</p></div>';
+    return;
+  }
+  list.innerHTML = '<ul class="rank-list">' + sorted.map(([uid, data], i) => `
+    <li class="rank-item">
+      <div class="rank-number">${i+1}</div>
+      <div class="rank-name">${esc(getUserName(uid))}</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-right:8px;">${data.tests} tests</div>
+      <div class="rank-score">${data.totalScore} pts</div>
+    </li>
+  `).join('') + '</ul>';
+}
+
+// ===== MODAL =====
+function openModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+// Close modal on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ===== TOAST =====
+function showToast(message, type) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + (type || 'info');
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===== HELPERS =====
+function esc(str) {
+  if (str == null) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
+function getUserName(uid) {
+  if (!uid) return 'Unknown';
+  const u = allUsers[uid];
+  return u ? (u.name || u.email || uid) : uid;
+}
+
+function formatDate(ts) {
+  if (!ts) return 'N/A';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return 'N/A';
+  return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Arithmetic Computer Education - Harda</title>
+<!-- Firebase loaded dynamically at bottom for faster rendering -->
+<style>
+/* ===== CSS CUSTOM PROPERTIES ===== */
+:root {
+  --primary: #10b981;
+  --primary-light: #34d399;
+  --primary-dark: #059669;
+  --teal: #14b8a6;
+  --teal-dark: #0d9488;
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-input: #f1f5f9;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  --glass-bg: rgba(255,255,255,0.15);
+  --glass-border: rgba(255,255,255,0.25);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --gradient: linear-gradient(135deg, #10b981, #14b8a6, #059669);
+  --gradient-dark: linear-gradient(135deg, #0f172a, #1e293b);
+  --gold: #f59e0b;
+  --silver: #94a3b8;
+  --bronze: #d97706;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --info: #3b82f6;
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-hover: #334155;
+  --bg-input: #334155;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #334155;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.3);
+  --glass-bg: rgba(30,41,59,0.6);
+  --glass-border: rgba(148,163,184,0.2);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* ===== SPLASH SCREEN ===== */
+#splash-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.5s, transform 0.5s;
+}
+#splash-screen.hide { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+.splash-stars { position: absolute; inset: 0; overflow: hidden; }
+.splash-star {
+  position: absolute; width: 3px; height: 3px;
+  background: #fff; border-radius: 50%;
+  animation: twinkle 2s infinite alternate;
+}
+@keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+
+.splash-logo-container { position: relative; z-index: 1; }
+.splash-logo-ring {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: var(--gradient);
+  display: flex; align-items: center; justify-content: center;
+  animation: pulse-ring 2s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(16,185,129,0.4), 0 0 80px rgba(20,184,166,0.2);
+}
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(16,185,129,0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(16,185,129,0.6), 0 0 100px rgba(20,184,166,0.3); }
+}
+.splash-logo-text {
+  font-size: 2.5rem; font-weight: 900; color: #fff;
+  letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.splash-app-name {
+  margin-top: 24px; font-size: 1.25rem; font-weight: 700; color: #fff;
+  text-align: center; letter-spacing: 1px;
+}
+.splash-subtitle {
+  margin-top: 8px; font-size: 0.85rem; color: #94a3b8;
+  text-align: center; max-width: 280px;
+}
+
+/* ===== AUTH SCREEN ===== */
+#auth-screen {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  overflow-y: auto;
+}
+.auth-container {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px;
+}
+.auth-card {
+  width: 100%; max-width: 420px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  box-shadow: var(--glass-shadow);
+}
+.auth-header { text-align: center; margin-bottom: 28px; }
+.auth-header h2 { font-size: 1.5rem; color: #fff; font-weight: 700; }
+.auth-header p { font-size: 0.85rem; color: #94a3b8; margin-top: 6px; }
+.auth-tab-bar {
+  display: flex; background: rgba(255,255,255,0.08); border-radius: 10px;
+  padding: 4px; margin-bottom: 24px;
+}
+.auth-tab {
+  flex: 1; padding: 10px; text-align: center; font-size: 0.9rem; font-weight: 600;
+  color: #94a3b8; border-radius: 8px; cursor: pointer; transition: all 0.3s;
+  border: none; background: none;
+}
+.auth-tab.active { background: var(--gradient); color: #fff; box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 0.8rem; font-weight: 600;
+  color: #cbd5e1; margin-bottom: 6px;
+}
+.form-input-wrap { position: relative; }
+.form-input {
+  width: 100%; padding: 12px 14px; font-size: 0.95rem;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; color: #fff; outline: none; transition: border-color 0.3s;
+}
+.form-input::placeholder { color: #64748b; }
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+.form-select {
+  width: 100%; padding: 12px 14px; font-size: 0.95rem;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; color: #fff; outline: none; transition: border-color 0.3s;
+  appearance: none; cursor: pointer;
+}
+.form-select option { background: #1e293b; color: #fff; }
+.password-toggle {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #94a3b8; cursor: pointer;
+  font-size: 1.1rem; padding: 4px;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; font-size: 0.95rem; font-weight: 600;
+  border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--gradient); color: #fff; width: 100%;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.4);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.5); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-outline {
+  background: transparent; color: var(--primary); border: 1.5px solid var(--primary);
+}
+.btn-outline:hover { background: rgba(16,185,129,0.1); }
+.btn-sm { padding: 8px 16px; font-size: 0.82rem; border-radius: 8px; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-ghost { background: transparent; color: var(--text-secondary); }
+.btn-ghost:hover { background: var(--bg-card-hover); }
+
+.auth-error {
+  background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px; padding: 10px 14px; margin-bottom: 16px;
+  font-size: 0.82rem; color: #fca5a5; display: none;
+}
+.auth-error.show { display: block; }
+
+/* ===== APP SHELL ===== */
+#app-screen { display: none; min-height: 100vh; padding-bottom: 72px; }
+
+/* Top Bar */
+.top-bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg-card); border-bottom: 1px solid var(--border);
+  padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.top-bar-title { font-weight: 700; font-size: 1.1rem; color: var(--text); flex: 1; }
+.top-bar-title span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.top-bar-btn {
+  width: 40px; height: 40px; border-radius: 10px; border: none;
+  background: var(--bg-input); color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; position: relative;
+}
+.top-bar-btn:hover { background: var(--bg-card-hover); }
+.top-bar-btn svg { width: 20px; height: 20px; }
+.notif-badge {
+  position: absolute; top: -2px; right: -2px;
+  background: var(--danger); color: #fff; font-size: 0.65rem; font-weight: 700;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+
+/* ===== SEARCH BAR ===== */
+.search-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+}
+.search-overlay.show { display: flex; flex-direction: column; align-items: center; padding-top: 80px; }
+.search-panel {
+  width: 90%; max-width: 600px; background: var(--bg-card);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);
+  overflow: hidden; max-height: 70vh; display: flex; flex-direction: column;
+}
+.search-input-wrap {
+  padding: 16px; display: flex; gap: 12px; align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.search-input-wrap input {
+  flex: 1; padding: 10px 14px; font-size: 0.95rem;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); outline: none;
+}
+.search-input-wrap input:focus { border-color: var(--primary); }
+.search-results { padding: 12px; overflow-y: auto; max-height: 50vh; }
+.search-result-item {
+  padding: 12px; border-radius: 10px; cursor: pointer;
+  transition: background 0.2s; display: flex; align-items: center; gap: 12px;
+}
+.search-result-item:hover { background: var(--bg-card-hover); }
+.search-result-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.search-result-info h4 { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.search-result-info p { font-size: 0.78rem; color: var(--text-muted); }
+
+/* ===== NOTIFICATION PANEL ===== */
+.notif-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.4);
+}
+.notif-overlay.show { display: block; }
+.notif-panel {
+  position: fixed; top: 0; right: -380px; bottom: 0; width: 360px; max-width: 90vw;
+  background: var(--bg-card); z-index: 201;
+  box-shadow: var(--shadow-xl); transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+}
+.notif-panel.show { right: 0; }
+.notif-panel-header {
+  padding: 20px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.notif-panel-header h3 { font-size: 1.1rem; font-weight: 700; }
+.notif-panel-close {
+  width: 32px; height: 32px; border-radius: 8px; border: none;
+  background: var(--bg-input); color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.notif-list { flex: 1; overflow-y: auto; padding: 12px; }
+.notif-item {
+  padding: 14px; border-radius: 10px; margin-bottom: 8px;
+  background: var(--bg-input); cursor: pointer; transition: all 0.2s;
+  border-left: 3px solid var(--primary);
+}
+.notif-item.read { border-left-color: var(--text-muted); opacity: 0.7; }
+.notif-item h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+.notif-item p { font-size: 0.78rem; color: var(--text-secondary); }
+.notif-item .notif-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+
+/* ===== MAIN CONTENT AREA ===== */
+.main-content { padding: 16px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* Section Header */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-header h2 { font-size: 1.2rem; font-weight: 700; }
+.section-header a {
+  font-size: 0.85rem; color: var(--primary); font-weight: 600;
+  cursor: pointer; text-decoration: none;
+}
+
+/* ===== BANNER SLIDER ===== */
+.banner-slider {
+  position: relative; border-radius: var(--radius-lg); overflow: hidden;
+  margin-bottom: 24px; aspect-ratio: 16/7;
+  background: var(--bg-input);
+}
+.banner-track { display: flex; transition: transform 0.5s ease; height: 100%; }
+.banner-slide {
+  min-width: 100%; height: 100%; position: relative;
+  display: flex; align-items: flex-end; padding: 20px;
+}
+.banner-slide img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+}
+.banner-slide-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(transparent 40%, rgba(0,0,0,0.7));
+}
+.banner-slide-content { position: relative; z-index: 1; }
+.banner-slide-content h3 { font-size: 1.1rem; color: #fff; font-weight: 700; }
+.banner-dots {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px;
+}
+.banner-dot {
+  width: 8px; height: 8px; border-radius: 4px;
+  background: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s;
+}
+.banner-dot.active { background: #fff; width: 20px; }
+
+/* ===== CATEGORY CARDS ===== */
+.category-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  margin-bottom: 28px;
+}
+.category-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 16px;
+  text-align: center; cursor: pointer; transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.category-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--gradient);
+}
+.category-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.category-icon {
+  width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(20,184,166,0.1));
+  color: var(--primary);
+}
+.category-card h3 { font-size: 0.88rem; font-weight: 600; }
+.category-card p { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ===== CONTENT CARDS ===== */
+.content-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  margin-bottom: 24px;
+}
+@media (min-width: 640px) { .content-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .content-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.content-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  cursor: pointer; transition: all 0.3s;
+}
+.content-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.content-card-img {
+  aspect-ratio: 16/10; background: var(--bg-input);
+  position: relative; overflow: hidden;
+}
+.content-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.content-card-body { padding: 12px; }
+.content-card-body h4 {
+  font-size: 0.85rem; font-weight: 600; line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.content-card-meta {
+  display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 600;
+}
+.badge-free { background: rgba(16,185,129,0.15); color: var(--primary); }
+.badge-paid { background: rgba(245,158,11,0.15); color: var(--warning); }
+.badge-category { background: rgba(59,130,246,0.12); color: var(--info); }
+
+/* ===== TEST SECTION ===== */
+.filter-tabs {
+  display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
+  padding-bottom: 4px;
+}
+.filter-tab {
+  padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
+  border: 1.5px solid var(--border); background: var(--bg-card);
+  color: var(--text-secondary); cursor: pointer; white-space: nowrap; transition: all 0.3s;
+}
+.filter-tab.active {
+  background: var(--gradient); color: #fff; border-color: transparent;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+
+.test-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px;
+  transition: all 0.3s; cursor: pointer;
+}
+.test-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+.test-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.test-card-top h4 { font-size: 0.95rem; font-weight: 600; flex: 1; margin-right: 8px; }
+.test-card-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 10px; }
+.test-card-stats {
+  display: flex; gap: 16px; font-size: 0.78rem; color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.test-card-stats span { display: flex; align-items: center; gap: 4px; }
+.test-card-actions { display: flex; gap: 8px; }
+
+/* ===== TEST TAKING ===== */
+#test-screen {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: var(--bg); flex-direction: column;
+}
+#test-screen.show { display: flex; }
+
+.test-header {
+  padding: 12px 16px; background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.test-header-info { flex: 1; }
+.test-header-info h3 { font-size: 0.9rem; font-weight: 600; }
+.test-header-info p { font-size: 0.75rem; color: var(--text-muted); }
+.test-timer {
+  padding: 6px 12px; border-radius: 8px;
+  background: rgba(239,68,68,0.1); color: var(--danger);
+  font-weight: 700; font-size: 0.9rem; font-variant-numeric: tabular-nums;
+}
+.test-close-btn {
+  width: 36px; height: 36px; border-radius: 8px; border: none;
+  background: var(--bg-input); color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+
+.test-body { flex: 1; overflow-y: auto; padding: 16px; }
+.question-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
+}
+.question-text { font-size: 1rem; font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
+.question-marks { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+
+.options-list { display: flex; flex-direction: column; gap: 10px; }
+.option-item {
+  padding: 14px 16px; border-radius: 10px;
+  border: 1.5px solid var(--border); cursor: pointer;
+  transition: all 0.25s; display: flex; align-items: center; gap: 12px;
+  background: var(--bg-card);
+}
+.option-item:hover { border-color: var(--primary); background: rgba(16,185,129,0.05); }
+.option-item.selected {
+  border-color: var(--primary); background: rgba(16,185,129,0.1);
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+}
+.option-item.correct { border-color: var(--success); background: rgba(16,185,129,0.15); }
+.option-item.incorrect { border-color: var(--danger); background: rgba(239,68,68,0.1); }
+.option-letter {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem;
+  background: var(--bg-input); color: var(--text-secondary);
+  flex-shrink: 0; transition: all 0.25s;
+}
+.option-item.selected .option-letter { background: var(--primary); color: #fff; }
+.option-item.correct .option-letter { background: var(--success); color: #fff; }
+.option-item.incorrect .option-letter { background: var(--danger); color: #fff; }
+.option-text { font-size: 0.9rem; flex: 1; }
+
+.test-footer {
+  padding: 12px 16px; background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.test-footer .btn { flex: 1; }
+
+/* Question Navigator */
+.q-nav {
+  display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 16px;
+  background: var(--bg-card); border-top: 1px solid var(--border);
+  justify-content: center;
+}
+.q-nav-dot {
+  width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  background: var(--bg-card); color: var(--text-secondary);
+}
+.q-nav-dot.answered { background: rgba(16,185,129,0.15); border-color: var(--primary); color: var(--primary); }
+.q-nav-dot.current { background: var(--gradient); color: #fff; border-color: transparent; }
+
+/* ===== RESULT SCREEN ===== */
+#result-screen {
+  display: none; position: fixed; inset: 0; z-index: 350;
+  background: var(--bg); overflow-y: auto;
+}
+#result-screen.show { display: block; }
+
+.result-header {
+  background: var(--gradient); padding: 40px 20px; text-align: center;
+  color: #fff; position: relative; overflow: hidden;
+}
+.result-header::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.result-score { font-size: 3rem; font-weight: 900; position: relative; }
+.result-score-label { font-size: 0.9rem; opacity: 0.8; position: relative; }
+.result-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  padding: 20px; max-width: 600px; margin: -20px auto 0; position: relative; z-index: 1;
+}
+.result-stat-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 14px;
+  text-align: center; box-shadow: var(--shadow);
+}
+.result-stat-card .stat-val { font-size: 1.4rem; font-weight: 700; }
+.result-stat-card .stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+.stat-correct .stat-val { color: var(--success); }
+.stat-incorrect .stat-val { color: var(--danger); }
+.stat-skipped .stat-val { color: var(--warning); }
+
+.result-answers { padding: 20px; max-width: 700px; margin: 0 auto; }
+.result-answers h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+.result-q-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+}
+.result-q-card .rq-question { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+.result-q-card .rq-answer {
+  font-size: 0.82rem; padding: 6px 10px; border-radius: 6px;
+  display: inline-block; margin-bottom: 6px;
+}
+.rq-correct { background: rgba(16,185,129,0.15); color: var(--success); }
+.rq-incorrect { background: rgba(239,68,68,0.1); color: var(--danger); }
+.rq-explanation { font-size: 0.8rem; color: var(--text-secondary); font-style: italic; margin-top: 6px; }
+
+/* ===== PDF SECTION ===== */
+.pdf-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px;
+  display: flex; gap: 14px; align-items: center; transition: all 0.3s;
+}
+.pdf-card:hover { box-shadow: var(--shadow); }
+.pdf-icon {
+  width: 50px; height: 50px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(245,158,11,0.1));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0; color: #ef4444;
+}
+.pdf-info { flex: 1; }
+.pdf-info h4 { font-size: 0.9rem; font-weight: 600; }
+.pdf-info p { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ===== VIDEO / COURSE SECTION ===== */
+.course-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px;
+  transition: all 0.3s;
+}
+.course-card:hover { box-shadow: var(--shadow-lg); }
+.course-thumb {
+  aspect-ratio: 16/9; background: var(--bg-input); position: relative;
+  overflow: hidden;
+}
+.course-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.course-lock-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: #fff;
+}
+.course-body { padding: 14px; }
+.course-body h4 { font-size: 0.95rem; font-weight: 600; }
+.course-body p { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+.course-actions { padding: 0 14px 14px; display: flex; gap: 8px; }
+
+.video-playlist { padding: 0 14px 14px; }
+.video-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px;
+  border-radius: 8px; cursor: pointer; transition: background 0.2s;
+}
+.video-item:hover { background: var(--bg-input); }
+.video-play-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(16,185,129,0.15); color: var(--primary);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.video-item-title { font-size: 0.85rem; flex: 1; }
+.video-item-order { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ===== VIDEO PLAYER MODAL ===== */
+.video-modal {
+  display: none; position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+  padding: 16px;
+}
+.video-modal.show { display: flex; }
+.video-modal-inner { width: 100%; max-width: 800px; }
+.video-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.2); color: #fff; font-size: 1.2rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.video-modal iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 12px; }
+
+/* ===== PROFILE SECTION ===== */
+.profile-header {
+  background: var(--gradient); padding: 30px 20px; text-align: center;
+  color: #fff; position: relative;
+}
+.profile-avatar {
+  width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px;
+  background: rgba(255,255,255,0.2); display: flex; align-items: center;
+  justify-content: center; font-size: 1.8rem; font-weight: 700; border: 3px solid rgba(255,255,255,0.4);
+}
+.profile-name { font-size: 1.2rem; font-weight: 700; }
+.profile-email { font-size: 0.82rem; opacity: 0.8; margin-top: 4px; }
+
+.profile-tabs {
+  display: flex; border-bottom: 2px solid var(--border);
+  margin: 0 16px; overflow-x: auto;
+}
+.profile-tab {
+  padding: 12px 16px; font-size: 0.85rem; font-weight: 600;
+  color: var(--text-muted); cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.3s;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.profile-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.profile-tab-content { padding: 16px; }
+.profile-tab-panel { display: none; }
+.profile-tab-panel.active { display: block; }
+
+.purchase-item, .result-item, .payment-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 10px;
+}
+.purchase-item h4, .result-item h4, .payment-item h4 { font-size: 0.88rem; font-weight: 600; }
+.purchase-item p, .result-item p, .payment-item p { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+.payment-status {
+  display: inline-block; padding: 3px 10px; border-radius: 6px;
+  font-size: 0.72rem; font-weight: 600; margin-top: 6px;
+}
+.status-pending { background: rgba(245,158,11,0.15); color: var(--warning); }
+.status-approved { background: rgba(16,185,129,0.15); color: var(--success); }
+.status-rejected { background: rgba(239,68,68,0.1); color: var(--danger); }
+
+/* Payment Form */
+.payment-form {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.payment-form h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+.upi-info {
+  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 16px; text-align: center;
+}
+.upi-info .upi-id { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+.payment-form .form-group { margin-bottom: 12px; }
+.payment-form .form-input, .payment-form .form-select {
+  width: 100%; padding: 10px 12px; font-size: 0.9rem;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); outline: none;
+}
+.payment-form .form-input:focus, .payment-form .form-select:focus {
+  border-color: var(--primary);
+}
+
+/* ===== LEADERBOARD ===== */
+.leaderboard-podium {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 8px; padding: 20px; margin-bottom: 20px;
+}
+.podium-item {
+  text-align: center; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 16px 12px 12px; min-width: 90px;
+  background: var(--bg-card); border: 1px solid var(--border);
+}
+.podium-item.gold { background: linear-gradient(180deg, rgba(245,158,11,0.15), var(--bg-card)); }
+.podium-item.silver { background: linear-gradient(180deg, rgba(148,163,184,0.15), var(--bg-card)); }
+.podium-item.bronze { background: linear-gradient(180deg, rgba(217,119,6,0.15), var(--bg-card)); }
+.podium-medal { font-size: 1.5rem; margin-bottom: 6px; }
+.podium-name { font-size: 0.82rem; font-weight: 600; }
+.podium-score { font-size: 0.75rem; color: var(--primary); font-weight: 700; }
+
+.lb-list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 8px;
+}
+.lb-rank {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem; font-weight: 700; background: var(--bg-input);
+  color: var(--text-secondary);
+}
+.lb-info { flex: 1; }
+.lb-info h4 { font-size: 0.88rem; font-weight: 600; }
+.lb-info p { font-size: 0.75rem; color: var(--text-muted); }
+.lb-score { font-size: 0.9rem; font-weight: 700; color: var(--primary); }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
+  background: var(--bg-card); border-top: 1px solid var(--border);
+  display: flex; padding: 6px 0; padding-bottom: max(6px, env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 6px 0; cursor: pointer; transition: all 0.2s;
+  border: none; background: none; color: var(--text-muted);
+}
+.nav-item.active { color: var(--primary); }
+.nav-item svg { width: 22px; height: 22px; transition: all 0.2s; }
+.nav-item.active svg { transform: scale(1.1); }
+.nav-item span { font-size: 0.65rem; font-weight: 600; margin-top: 2px; }
+.nav-item.active span { color: var(--primary); }
+
+/* ===== LOADING STATES ===== */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-input) 25%, var(--bg-card-hover) 50%, var(--bg-input) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-text { height: 14px; margin-bottom: 8px; }
+.skeleton-text.short { width: 60%; }
+.skeleton-card { height: 180px; border-radius: var(--radius-lg); }
+.skeleton-rect { height: 100px; border-radius: var(--radius); }
+
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border);
+  border-top-color: var(--primary); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 20px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== CONFIRM DIALOG ===== */
+.confirm-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+  padding: 20px;
+}
+.confirm-overlay.show { display: flex; }
+.confirm-dialog {
+  background: var(--bg-card); border-radius: var(--radius-lg); padding: 24px;
+  max-width: 360px; width: 100%; text-align: center; box-shadow: var(--shadow-xl);
+}
+.confirm-dialog h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.confirm-dialog p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+.confirm-dialog .btn-row { display: flex; gap: 10px; }
+.confirm-dialog .btn-row .btn { flex: 1; }
+
+/* ===== TOAST ===== */
+.toast-container {
+  position: fixed; top: 20px; right: 20px; z-index: 600;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.toast {
+  padding: 12px 18px; border-radius: 10px; font-size: 0.85rem; font-weight: 500;
+  box-shadow: var(--shadow-lg); animation: slideInRight 0.3s ease;
+  max-width: 320px;
+}
+.toast-success { background: var(--success); color: #fff; }
+.toast-error { background: var(--danger); color: #fff; }
+.toast-info { background: var(--info); color: #fff; }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* ===== DARK MODE TOGGLE ===== */
+.theme-toggle {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: var(--bg-input); border: 1.5px solid var(--border);
+  cursor: pointer; position: relative; transition: all 0.3s;
+}
+.theme-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--text-muted); transition: all 0.3s;
+}
+.theme-toggle.dark { background: var(--primary); border-color: var(--primary); }
+.theme-toggle.dark::after { left: 22px; background: #fff; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center; padding: 40px 20px; color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state h3 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+.empty-state p { font-size: 0.82rem; }
+
+/* ===== BUY MODAL ===== */
+.buy-modal {
+  display: none; position: fixed; inset: 0; z-index: 450;
+  background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+  padding: 20px;
+}
+.buy-modal.show { display: flex; }
+.buy-modal-content {
+  background: var(--bg-card); border-radius: var(--radius-lg); padding: 24px;
+  max-width: 380px; width: 100%; box-shadow: var(--shadow-xl);
+}
+.buy-modal-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+.buy-modal-content .price-tag {
+  font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 16px;
+}
+.buy-modal-content .upi-section {
+  background: rgba(16,185,129,0.08); border-radius: var(--radius);
+  padding: 14px; text-align: center; margin-bottom: 16px;
+}
+.buy-modal-content .upi-id-text { font-size: 1rem; font-weight: 700; color: var(--primary); }
+</style>
+</head>
+<body>
+
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splash-screen">
+  <div class="splash-stars" id="splash-stars"></div>
+  <div class="splash-logo-container">
+    <div class="splash-logo-ring">
+      <div class="splash-logo-text">ACE</div>
+    </div>
+  </div>
+  <div class="splash-app-name">Arithmetic Computer Education</div>
+  <div class="splash-subtitle">Harda's Premier Computer Education Platform</div>
+</div>
+
+<!-- ===== AUTH SCREEN ===== -->
+<div id="auth-screen">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div style="font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#10b981,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;">ACE</div>
+        <h2 id="auth-title">Welcome Back</h2>
+        <p id="auth-subtitle">Login to continue learning</p>
+      </div>
+
+      <div class="auth-tab-bar">
+        <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+        <button class="auth-tab" data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+
+      <div id="auth-error" class="auth-error"></div>
+
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form active">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" class="form-input" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="form-input-wrap">
+            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" style="padding-right:44px">
+            <button class="password-toggle" onclick="togglePassword('login-password', this)">&#128065;</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="login-btn" onclick="handleLogin()">Login</button>
+      </div>
+
+      <!-- Signup Form -->
+      <div id="signup-form" class="auth-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="signup-name" class="form-input" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="signup-email" class="form-input" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="form-input-wrap">
+            <input type="password" id="signup-password" class="form-input" placeholder="Create a password (min 6 chars)" style="padding-right:44px">
+            <button class="password-toggle" onclick="togglePassword('signup-password', this)">&#128065;</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Exam Type</label>
+          <select id="signup-exam" class="form-select">
+            <option value="">Select Exam Type</option>
+            <option value="Computer">Computer</option>
+            <option value="Banking">Banking</option>
+            <option value="SSC">SSC</option>
+            <option value="Railway">Railway</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="signup-btn" onclick="handleSignup()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP SCREEN ===== -->
+<div id="app-screen">
+  <!-- Demo Mode Banner (shown when Firebase not configured) -->
+  <div id="demo-banner" style="display:none;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;text-align:center;padding:6px 16px;font-size:0.78rem;font-weight:600;z-index:90;">
+    &#9888;&#65039; Demo Mode &mdash; Add Firebase config to connect real database &nbsp;|&nbsp; Login: rahul@demo.com / password123
+  </div>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-title"><span>ACE</span></div>
+    <button class="top-bar-btn" onclick="openSearch()" title="Search">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="top-bar-btn" onclick="toggleNotifications()" title="Notifications">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+    </button>
+    <div class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- HOME -->
+    <div id="section-home" class="section active">
+      <div class="banner-slider" id="banner-slider">
+        <div class="banner-track" id="banner-track"></div>
+        <div class="banner-dots" id="banner-dots"></div>
+      </div>
+
+      <div class="section-header">
+        <h2>Categories</h2>
+      </div>
+      <div class="category-grid">
+        <div class="category-card" onclick="navigateTo('tests')">
+          <div class="category-icon">&#9998;</div>
+          <h3>Test Series</h3>
+          <p>Practice tests</p>
+        </div>
+        <div class="category-card" onclick="navigateTo('pdfs')">
+          <div class="category-icon">&#128196;</div>
+          <h3>PDFs</h3>
+          <p>Study material</p>
+        </div>
+        <div class="category-card" onclick="navigateTo('courses')">
+          <div class="category-icon">&#127891;</div>
+          <h3>Courses</h3>
+          <p>Video courses</p>
+        </div>
+        <div class="category-card" onclick="navigateTo('leaderboard')">
+          <div class="category-icon">&#127942;</div>
+          <h3>Leaderboard</h3>
+          <p>Top performers</p>
+        </div>
+      </div>
+
+      <!-- Featured Tests -->
+      <div class="section-header">
+        <h2>Featured Tests</h2>
+        <a onclick="navigateTo('tests')">View All &#8594;</a>
+      </div>
+      <div class="content-grid" id="featured-tests"></div>
+
+      <!-- Featured PDFs -->
+      <div class="section-header">
+        <h2>Featured PDFs</h2>
+        <a onclick="navigateTo('pdfs')">View All &#8594;</a>
+      </div>
+      <div id="featured-pdfs"></div>
+
+      <!-- Featured Courses -->
+      <div class="section-header">
+        <h2>Featured Courses</h2>
+        <a onclick="navigateTo('courses')">View All &#8594;</a>
+      </div>
+      <div id="featured-courses"></div>
+    </div>
+
+    <!-- TESTS -->
+    <div id="section-tests" class="section">
+      <div class="section-header">
+        <h2>Test Series</h2>
+      </div>
+      <div class="form-group" style="margin-bottom:12px">
+        <input type="text" id="test-search" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="&#128269; Search tests..." oninput="filterTests()">
+      </div>
+      <div class="filter-tabs" id="test-filter-tabs">
+        <button class="filter-tab active" onclick="setTestFilter('all', this)">All</button>
+        <button class="filter-tab" onclick="setTestFilter('free', this)">Free</button>
+        <button class="filter-tab" onclick="setTestFilter('paid', this)">Paid</button>
+      </div>
+      <div id="test-list"></div>
+    </div>
+
+    <!-- PDFs -->
+    <div id="section-pdfs" class="section">
+      <div class="section-header">
+        <h2>Study Material - PDFs</h2>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <input type="text" id="pdf-search" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="&#128269; Search PDFs..." oninput="filterPDFs()">
+      </div>
+      <div id="pdf-list"></div>
+    </div>
+
+    <!-- COURSES -->
+    <div id="section-courses" class="section">
+      <div class="section-header">
+        <h2>Video Courses</h2>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <input type="text" id="course-search" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="&#128269; Search courses..." oninput="filterCourses()">
+      </div>
+      <div id="course-list"></div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="section-leaderboard" class="section">
+      <div class="section-header">
+        <h2>&#127942; Leaderboard</h2>
+      </div>
+      <div id="leaderboard-content"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="section-profile" class="section">
+      <div class="profile-header" id="profile-header">
+        <div class="profile-avatar" id="profile-avatar">A</div>
+        <div class="profile-name" id="profile-name">Student</div>
+        <div class="profile-email" id="profile-email">email@example.com</div>
+      </div>
+      <div class="profile-tabs">
+        <button class="profile-tab active" onclick="switchProfileTab('purchases', this)">Purchases</button>
+        <button class="profile-tab" onclick="switchProfileTab('results', this)">Results</button>
+        <button class="profile-tab" onclick="switchProfileTab('payments', this)">Payments</button>
+        <button class="profile-tab" onclick="switchProfileTab('payment-form', this)">Pay</button>
+      </div>
+      <div class="profile-tab-content">
+        <div id="ptab-purchases" class="profile-tab-panel active"></div>
+        <div id="ptab-results" class="profile-tab-panel"></div>
+        <div id="ptab-payments" class="profile-tab-panel"></div>
+        <div id="ptab-payment-form" class="profile-tab-panel">
+          <div class="payment-form">
+            <h3>&#128179; Submit Payment</h3>
+            <div class="upi-info">
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:6px">Pay to UPI ID:</p>
+              <div class="upi-id" id="upi-id-display">Loading...</div>
+              <p style="font-size:0.72rem;color:var(--text-muted);margin-top:8px">Scan QR or pay to above UPI ID</p>
+              <div style="width:120px;height:120px;background:var(--bg-input);border-radius:12px;margin:12px auto 0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-muted)">QR Code</div>
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px">Amount (&#8377;)</label>
+              <input type="number" id="pay-amount" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px">Payment Type</label>
+              <select id="pay-type" class="form-select" style="background:var(--bg-input);color:var(--text);border-color:var(--border)">
+                <option value="test">Test Series</option>
+                <option value="pdf">PDF Material</option>
+                <option value="course">Video Course</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px">Content ID (from item)</label>
+              <input type="text" id="pay-content-id" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="Enter content ID">
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px">Screenshot URL</label>
+              <input type="url" id="pay-screenshot" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="Upload & paste screenshot URL">
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px">UPI Reference No.</label>
+              <input type="text" id="pay-upi-ref" class="form-input" style="background:var(--bg-input);color:var(--text);border-color:var(--border)" placeholder="Enter UPI reference number">
+            </div>
+            <button class="btn btn-primary" onclick="submitPayment()">Submit Payment</button>
+          </div>
+          <div style="margin-top:24px;text-align:center">
+            <button class="btn btn-danger btn-sm" onclick="handleLogout()">&#9211; Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="navigateTo('home')" data-nav="home">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('tests')" data-nav="tests">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Tests</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('pdfs')" data-nav="pdfs">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>PDFs</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('courses')" data-nav="courses">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span>Courses</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('profile')" data-nav="profile">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== TEST TAKING SCREEN ===== -->
+<div id="test-screen">
+  <div class="test-header">
+    <button class="test-close-btn" onclick="confirmExitTest()">&#10005;</button>
+    <div class="test-header-info">
+      <h3 id="test-title">Test</h3>
+      <p id="test-progress">Question 1 of 10</p>
+    </div>
+    <div class="test-timer" id="test-timer">00:00</div>
+  </div>
+  <div class="test-body" id="test-body"></div>
+  <div class="q-nav" id="q-nav"></div>
+  <div class="test-footer">
+    <button class="btn btn-outline btn-sm" id="prev-q-btn" onclick="prevQuestion()">&#8592; Previous</button>
+    <button class="btn btn-primary btn-sm" id="next-q-btn" onclick="nextQuestion()">Next &#8594;</button>
+    <button class="btn btn-danger btn-sm" id="submit-test-btn" onclick="confirmSubmitTest()" style="display:none">Submit Test</button>
+  </div>
+</div>
+
+<!-- ===== RESULT SCREEN ===== -->
+<div id="result-screen">
+  <div class="result-header">
+    <div class="result-score" id="result-score">0</div>
+    <div class="result-score-label" id="result-score-label">out of 0</div>
+  </div>
+  <div class="result-stats">
+    <div class="result-stat-card stat-correct">
+      <div class="stat-val" id="result-correct">0</div>
+      <div class="stat-label">Correct</div>
+    </div>
+    <div class="result-stat-card stat-incorrect">
+      <div class="stat-val" id="result-incorrect">0</div>
+      <div class="stat-label">Incorrect</div>
+    </div>
+    <div class="result-stat-card stat-skipped">
+      <div class="stat-val" id="result-skipped">0</div>
+      <div class="stat-label">Skipped</div>
+    </div>
+  </div>
+  <div class="result-answers">
+    <h3>Detailed Answers</h3>
+    <div id="result-answers-list"></div>
+  </div>
+  <div style="padding:20px;text-align:center">
+    <button class="btn btn-primary" style="max-width:300px;margin:0 auto" onclick="closeResultScreen()">Back to Dashboard</button>
+  </div>
+</div>
+
+<!-- ===== SEARCH OVERLAY ===== -->
+<div class="search-overlay" id="search-overlay" onclick="closeSearch(event)">
+  <div class="search-panel" onclick="event.stopPropagation()">
+    <div class="search-input-wrap">
+      <input type="text" id="search-input" placeholder="Search tests, PDFs, courses..." oninput="handleSearch()">
+      <button class="btn btn-ghost btn-sm" onclick="closeSearch()">Cancel</button>
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="empty-state"><div class="empty-icon">&#128269;</div><h3>Search</h3><p>Type to search across tests, PDFs, and courses</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NOTIFICATION PANEL ===== -->
+<div class="notif-overlay" id="notif-overlay" onclick="closeNotifications()"></div>
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-panel-header">
+    <h3>Notifications</h3>
+    <button class="notif-panel-close" onclick="closeNotifications()">&#10005;</button>
+  </div>
+  <div class="notif-list" id="notif-list">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- ===== CONFIRM DIALOG ===== -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-dialog">
+    <h3 id="confirm-title">Confirm</h3>
+    <p id="confirm-message">Are you sure?</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-primary" id="confirm-action-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BUY MODAL ===== -->
+<div class="buy-modal" id="buy-modal">
+  <div class="buy-modal-content">
+    <h3 id="buy-modal-title">Purchase Content</h3>
+    <div class="price-tag" id="buy-modal-price">&#8377;0</div>
+    <div class="upi-section">
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:6px">Pay to UPI ID:</p>
+      <div class="upi-id-text" id="buy-modal-upi">Loading...</div>
+      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:6px">After payment, submit screenshot in Profile &#8594; Pay</p>
+    </div>
+    <div class="btn-row" style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeBuyModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" id="buy-modal-confirm">I've Paid</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== VIDEO PLAYER MODAL ===== -->
+<div class="video-modal" id="video-modal">
+  <button class="video-modal-close" onclick="closeVideoModal()">&#10005;</button>
+  <div class="video-modal-inner">
+    <iframe id="video-iframe" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ===== FIREBASE CONFIG =====
+// >>> REPLACE THESE WITH YOUR FIREBASE PROJECT CONFIG <<<
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+let FIREBASE_CONNECTED = false;
+let auth = null;
+let db = null;
+let firebaseReady = false;
+
+// Check if config has placeholder values
+const hasPlaceholders = firebaseConfig.apiKey === "YOUR_API_KEY" ||
+  firebaseConfig.databaseURL.includes("YOUR_PROJECT");
+
+// Mock objects for demo mode (when Firebase is not available)
+function createMockAuth() {
+  return { onAuthStateChanged: (cb) => cb(null), signInWithEmailAndPassword: async() => { throw new Error('Demo mode'); }, createUserWithEmailAndPassword: async() => { throw new Error('Demo mode'); }, signOut: () => {}, currentUser: null };
+}
+function createMockDb() {
+  return { ref: () => ({ on: ()=>{}, once: async()=>({exists:()=>false,val:()=>null,forEach:()=>{}}), set: async()=>{}, update: async()=>{}, remove: async()=>{}, push: ()=>({key:'demo',set:async()=>{}}), orderByChild:()=>({equalTo:()=>({once:async()=>({exists:()=>false,val:()=>null,forEach:()=>{}})})}), limitToLast:()=>({once:async()=>({exists:()=>false,val:()=>null})}) }) };
+}
+
+// ===== DYNAMIC FIREBASE LOADING =====
+function loadFirebaseScripts() {
+  return new Promise((resolve) => {
+    if (hasPlaceholders) {
+      console.warn("Firebase config has placeholder values — running in Demo Mode.");
+      resolve(false);
+      return;
+    }
+    const scripts = [
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js',
+      'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js'
+    ];
+    let loaded = 0;
+    scripts.forEach(src => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => { loaded++; if (loaded === scripts.length) resolve(true); };
+      s.onerror = () => { console.warn('Failed to load:', src); resolve(false); };
+      document.head.appendChild(s);
+    });
+    // Timeout: if scripts don't load in 8 seconds, fallback to demo mode
+    setTimeout(() => resolve(false), 8000);
+  });
+}
+
+async function initFirebase() {
+  const loaded = await loadFirebaseScripts();
+  if (loaded && typeof firebase !== 'undefined') {
+    try {
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.database();
+      FIREBASE_CONNECTED = true;
+      console.log("Firebase connected successfully");
+    } catch(e) {
+      FIREBASE_CONNECTED = false;
+      console.warn("Firebase init failed, running in demo mode:", e.message);
+      auth = createMockAuth();
+      db = createMockDb();
+    }
+  } else {
+    FIREBASE_CONNECTED = false;
+    console.warn("Firebase not loaded, running in demo mode.");
+    auth = createMockAuth();
+    db = createMockDb();
+  }
+  firebaseReady = true;
+}
+
+// ===== DEMO DATA =====
+const DEMO_DATA = {
+  users: {
+    'demo-uid1': { name:'Rahul Sharma', email:'rahul@demo.com', role:'student', examType:'SSC', createdAt: Date.now()-86400000*5 },
+    'demo-uid2': { name:'Priya Patel', email:'priya@demo.com', role:'student', examType:'Banking', createdAt: Date.now()-86400000*3 },
+    'demo-uid3': { name:'Amit Kumar', email:'amit@demo.com', role:'student', examType:'Computer', createdAt: Date.now()-86400000*1 }
+  },
+  tests: {
+    'test1': { id:'test1', title:'Computer Basics - Free Test', description:'Test your basic computer knowledge', type:'free', category:'Computer', totalQuestions:5, totalMarks:25, duration:10, active:true, createdAt: Date.now()-86400000*10 },
+    'test2': { id:'test2', title:'SSC Reasoning - Premium', description:'Advanced reasoning for SSC exam prep', type:'paid', price:99, category:'SSC', totalQuestions:5, totalMarks:50, duration:15, active:true, createdAt: Date.now()-86400000*5 },
+    'test3': { id:'test3', title:'Banking Awareness', description:'Banking sector knowledge test', type:'free', category:'Banking', totalQuestions:5, totalMarks:25, duration:10, active:true, createdAt: Date.now()-86400000*2 }
+  },
+  questions: {
+    'test1': {
+      'q1': { id:'q1', text:'What does CPU stand for?', options:['Central Processing Unit','Computer Personal Unit','Central Program Utility','Computer Processing Utility'], correctAnswer:0, marks:5, explanation:'CPU stands for Central Processing Unit, the brain of the computer.' },
+      'q2': { id:'q2', text:'Which is the output device?', options:['Keyboard','Mouse','Monitor','Scanner'], correctAnswer:2, marks:5, explanation:'Monitor displays output, making it an output device.' },
+      'q3': { id:'q3', text:'RAM is a type of?', options:['Secondary Memory','Primary Memory','Cache Memory','Virtual Memory'], correctAnswer:1, marks:5, explanation:'RAM (Random Access Memory) is primary/volatile memory.' },
+      'q4': { id:'q4', text:'1 KB equals how many bytes?', options:['512','1000','1024','2048'], correctAnswer:2, marks:5, explanation:'1 Kilobyte = 1024 bytes in binary system.' },
+      'q5': { id:'q5', text:'Which OS is developed by Microsoft?', options:['Linux','macOS','Windows','Android'], correctAnswer:2, marks:5, explanation:'Windows is Microsoft\'s operating system.' }
+    },
+    'test2': {
+      'q6': { id:'q6', text:'If APPLE=50, BANANA=42, then CHERRY=?', options:['60','63','66','69'], correctAnswer:1, marks:10, explanation:'Sum of letter positions: C(3)+H(8)+E(5)+R(18)+R(18)+Y(25)=77... Answer is 63 by pattern logic.' },
+      'q7': { id:'q7', text:'Find the odd one: 2, 5, 10, 17, 28', options:['5','10','17','28'], correctAnswer:3, marks:10, explanation:'Pattern is +3,+5,+7,+9 so 17+9=26 not 28.' },
+      'q8': { id:'q8', text:'A is B\'s brother. C is B\'s mother. D is C\'s father. How is A related to D?', options:['Grandson','Son','Grandfather','Uncle'], correctAnswer:0, marks:10, explanation:'D is C\'s father, C is B\'s mother, A is B\'s brother, so A is D\'s grandson.' },
+      'q9': { id:'q9', text:'Complete: 1, 1, 2, 3, 5, 8, ?', options:['11','12','13','14'], correctAnswer:2, marks:10, explanation:'Fibonacci series: each number is sum of previous two. 5+8=13.' },
+      'q10': { id:'q10', text:'If South becomes North-East, then West becomes?', options:['South-East','North-West','East','South'], correctAnswer:0, marks:10, explanation:'90 degree clockwise rotation: West becomes South-East.' }
+    },
+    'test3': {
+      'q11': { id:'q11', text:'RBI headquarters is located in?', options:['Delhi','Mumbai','Kolkata','Chennai'], correctAnswer:1, marks:5, explanation:'Reserve Bank of India HQ is in Mumbai.' },
+      'q12': { id:'q12', text:'NEFT stands for?', options:['National Electronic Funds Transfer','National Electronic Finance Transfer','New Electronic Funds Transfer','None'], correctAnswer:0, marks:5, explanation:'NEFT = National Electronic Funds Transfer.' },
+      'q13': { id:'q13', text:'What is the full form of ATM?', options:['Any Time Money','Automated Teller Machine','All Time Money','Auto Teller Money'], correctAnswer:1, marks:5, explanation:'ATM = Automated Teller Machine.' },
+      'q14': { id:'q14', text:'MICR code is used for?', options:['Credit Cards','Cheques','Loans','FD'], correctAnswer:1, marks:5, explanation:'MICR (Magnetic Ink Character Recognition) is used in cheques.' },
+      'q15': { id:'q15', text:'Which bank is called the Bank of Banks?', options:['SBI','PNB','RBI','BOI'], correctAnswer:2, marks:5, explanation:'RBI is the central bank, called Bank of Banks.' }
+    }
+  },
+  pdfs: {
+    'pdf1': { id:'pdf1', title:'Computer Fundamentals Notes', description:'Complete notes on computer basics, hardware & software', type:'free', category:'Computer', fileUrl:'#', pages:45, createdAt: Date.now()-86400000*8 },
+    'pdf2': { id:'pdf2', title:'SSC Math Complete Guide', description:'Comprehensive math guide for SSC CGL/CHSL', type:'paid', price:149, category:'SSC', fileUrl:'#', pages:120, createdAt: Date.now()-86400000*4 },
+    'pdf3': { id:'pdf3', title:'Banking Awareness PDF', description:'Important banking concepts for IBPS/SBI exams', type:'free', category:'Banking', fileUrl:'#', pages:65, createdAt: Date.now()-86400000*1 }
+  },
+  courses: {
+    'course1': { id:'course1', title:'Complete Computer Course', description:'Learn computer from scratch - MS Office, Internet, Typing', type:'free', category:'Computer', thumbnail:'', createdAt: Date.now()-86400000*7 },
+    'course2': { id:'course2', title:'Tally Prime with GST', description:'Complete Tally Prime accounting with GST practical training', type:'paid', price:499, category:'Computer', thumbnail:'', createdAt: Date.now()-86400000*3 }
+  },
+  videos: {
+    'course1': {
+      'v1': { id:'v1', title:'Introduction to Computers', url:'https://www.youtube.com/embed/dQw4w9WgXcQ', order:1 },
+      'v2': { id:'v2', title:'Understanding Hardware & Software', url:'https://www.youtube.com/embed/dQw4w9WgXcQ', order:2 }
+    },
+    'course2': {
+      'v3': { id:'v3', title:'Tally Prime Installation', url:'https://www.youtube.com/embed/dQw4w9WgXcQ', order:1 },
+      'v4': { id:'v4', title:'Creating Company in Tally', url:'https://www.youtube.com/embed/dQw4w9WgXcQ', order:2 }
+    }
+  },
+  banners: {
+    'b1': { id:'b1', title:'Welcome to ACE Harda!', imageUrl:'https://placehold.co/800x350/10b981/ffffff?text=Arithmetic+Computer+Education', active:true, order:1 },
+    'b2': { id:'b2', title:'New SSC Batch Starting!', imageUrl:'https://placehold.co/800x350/14b8a6/ffffff?text=New+SSC+Batch+Starting', active:true, order:2 }
+  },
+  notifications: {
+    'n1': { id:'n1', title:'Welcome to ACE!', message:'Start your learning journey with Arithmetic Computer Education, Harda.', type:'info', target:'all', createdAt: Date.now()-86400000*2 },
+    'n2': { id:'n2', title:'New Test Available', message:'Computer Basics free test is now live. Try it now!', type:'success', target:'all', createdAt: Date.now()-86400000*1 }
+  },
+  settings: { upiId:'arithmetic@upi', qrUrl:'', appName:'Arithmetic Computer Education', appAddress:'Harda, Madhya Pradesh' },
+  leaderboard: {
+    'lb1': { name:'Priya Patel', examType:'Banking', score:92, tests:8 },
+    'lb2': { name:'Rahul Sharma', examType:'SSC', score:87, tests:12 },
+    'lb3': { name:'Amit Kumar', examType:'Computer', score:85, tests:6 },
+    'lb4': { name:'Neha Singh', examType:'SSC', score:78, tests:5 },
+    'lb5': { name:'Vikas Jain', examType:'Banking', score:75, tests:7 },
+    'lb6': { name:'Suman Verma', examType:'Computer', score:72, tests:4 }
+  }
+};
+
+// ===== LOCAL STORAGE HELPERS =====
+function getLocalData(key) { try { return JSON.parse(localStorage.getItem('ace_'+key)) || null; } catch(e) { return null; } }
+function setLocalData(key, data) { try { localStorage.setItem('ace_'+key, JSON.stringify(data)); } catch(e) {} }
+
+function initDemoData() {
+  if (!getLocalData('initialized')) {
+    setLocalData('tests', DEMO_DATA.tests);
+    setLocalData('questions', DEMO_DATA.questions);
+    setLocalData('pdfs', DEMO_DATA.pdfs);
+    setLocalData('courses', DEMO_DATA.courses);
+    setLocalData('videos', DEMO_DATA.videos);
+    setLocalData('banners', DEMO_DATA.banners);
+    setLocalData('notifications', DEMO_DATA.notifications);
+    setLocalData('settings', DEMO_DATA.settings);
+    setLocalData('leaderboard', DEMO_DATA.leaderboard);
+    setLocalData('users', DEMO_DATA.users);
+    setLocalData('demo_accounts', [
+      { uid:'demo-uid1', email:'rahul@demo.com', password:'password123', name:'Rahul Sharma', examType:'SSC' },
+      { uid:'demo-uid2', email:'priya@demo.com', password:'password123', name:'Priya Patel', examType:'Banking' },
+      { uid:'demo-uid3', email:'amit@demo.com', password:'password123', name:'Amit Kumar', examType:'Computer' }
+    ]);
+    setLocalData('initialized', true);
+  }
+}
+
+function getDemoData(key) { return getLocalData(key) || DEMO_DATA[key] || {}; }
+
+// ===== GLOBAL STATE =====
+let currentUser = null;
+let currentSection = 'home';
+let testFilter = 'all';
+let allTests = {};
+let allPDFs = {};
+let allCourses = {};
+let allVideos = {};
+let userPurchases = [];
+let bannerIndex = 0;
+let bannerInterval = null;
+
+// Test state
+let activeTest = null;
+let activeQuestions = [];
+let currentQIndex = 0;
+let userAnswers = {};
+let testTimerInterval = null;
+let testStartTime = null;
+let testTimeLeft = 0;
+
+// ===== SPLASH SCREEN =====
+(function initSplash() {
+  const starsContainer = document.getElementById('splash-stars');
+  if (starsContainer) {
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'splash-star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 2 + 's';
+      star.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      starsContainer.appendChild(star);
+    }
+  }
+
+  // Start loading Firebase in background while splash shows
+  initFirebase();
+
+  // After splash animation, decide which screen to show
+  setTimeout(async () => {
+    // Wait for Firebase to finish loading (max 3 more seconds)
+    const waitStart = Date.now();
+    while (!firebaseReady && (Date.now() - waitStart < 3000)) {
+      await new Promise(r => setTimeout(r, 200));
+    }
+
+    if (FIREBASE_CONNECTED && auth) {
+      auth.onAuthStateChanged((user) => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) { splash.classList.add('hide'); }
+        setTimeout(() => {
+          if (splash) splash.style.display = 'none';
+          if (user) {
+            currentUser = user;
+            loadUserData(user.uid);
+            showApp();
+          } else {
+            showAuth();
+          }
+        }, 500);
+      });
+    } else {
+      // Demo mode - check localStorage for saved session
+      initDemoData();
+      const savedUser = getLocalData('current_user');
+      const splash = document.getElementById('splash-screen');
+      if (splash) { splash.classList.add('hide'); }
+      setTimeout(() => {
+        if (splash) splash.style.display = 'none';
+        // Show demo banner
+        const demoBanner = document.getElementById('demo-banner');
+        if (demoBanner) demoBanner.style.display = 'block';
+        if (savedUser) {
+          currentUser = savedUser;
+          loadUserDataDemo(savedUser.uid);
+          showApp();
+        } else {
+          showAuth();
+        }
+      }, 500);
+    }
+  }, 2500);
+})();
+
+// Demo mode user data loader
+function loadUserDataDemo(uid) {
+  const users = getDemoData('users');
+  if (users[uid]) {
+    currentUser.userData = users[uid];
+  }
+  const purchases = getLocalData('purchases') || [];
+  userPurchases = purchases.filter(p => p.userId === uid);
+}
+
+// ===== THEME =====
+(function initTheme() {
+  const saved = localStorage.getItem('ace-theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('theme-toggle').classList.add('dark');
+  }
+})();
+
+function toggleTheme() {
+  const toggle = document.getElementById('theme-toggle');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    document.documentElement.removeAttribute('data-theme');
+    toggle.classList.remove('dark');
+    localStorage.setItem('ace-theme', 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    toggle.classList.add('dark');
+    localStorage.setItem('ace-theme', 'dark');
+  }
+}
+
+// ===== AUTH =====
+function showAuth() {
+  document.getElementById('auth-screen').style.display = 'block';
+  document.getElementById('app-screen').style.display = 'none';
+}
+
+function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  // Show demo banner if not connected to Firebase
+  const demoBanner = document.getElementById('demo-banner');
+  if (demoBanner) demoBanner.style.display = FIREBASE_CONNECTED ? 'none' : 'block';
+  loadDashboard();
+  loadNotifications();
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('login-form').classList.toggle('active', tab === 'login');
+  document.getElementById('signup-form').classList.toggle('active', tab === 'signup');
+  document.getElementById('auth-title').textContent = tab === 'login' ? 'Welcome Back' : 'Create Account';
+  document.getElementById('auth-subtitle').textContent = tab === 'login' ? 'Login to continue learning' : 'Start your learning journey';
+  hideAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function hideAuthError() {
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '\u{1F441}\u{FE0F}\u{200D}\u{1F5E8}';
+  } else {
+    input.type = 'password';
+    btn.textContent = '\u{1F441}';
+  }
+}
+
+async function handleLogin() {
+  hideAuthError();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) { showAuthError('Please fill in all fields'); return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'Logging in...';
+  try {
+    if (FIREBASE_CONNECTED) {
+      const cred = await auth.signInWithEmailAndPassword(email, password);
+      currentUser = cred.user;
+      await loadUserData(cred.user.uid);
+    } else {
+      // Demo mode login
+      const accounts = getDemoData('demo_accounts') || [];
+      const account = accounts.find(a => a.email === email && a.password === password);
+      if (!account) {
+        // Auto-create new demo account
+        const newUid = 'user-' + Date.now();
+        const newAccount = { uid: newUid, email: email, password: password, name: email.split('@')[0], examType: 'Other' };
+        accounts.push(newAccount);
+        setLocalData('demo_accounts', accounts);
+        // Add to users
+        const users = getDemoData('users');
+        users[newUid] = { name: newAccount.name, email: email, role: 'student', examType: 'Other', createdAt: Date.now() };
+        setLocalData('users', users);
+        currentUser = { uid: newUid, email: email, displayName: newAccount.name };
+        loadUserDataDemo(newUid);
+      } else {
+        currentUser = { uid: account.uid, email: account.email, displayName: account.name };
+        loadUserDataDemo(account.uid);
+      }
+      setLocalData('current_user', currentUser);
+    }
+    showApp();
+    showToast('Welcome back!', 'success');
+  } catch (e) {
+    showAuthError(e.message.replace('Firebase: ', ''));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Login';
+  }
+}
+
+async function handleSignup() {
+  hideAuthError();
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const examType = document.getElementById('signup-exam').value;
+  if (!name || !email || !password || !examType) { showAuthError('Please fill in all fields'); return; }
+  if (password.length < 6) { showAuthError('Password must be at least 6 characters'); return; }
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  try {
+    if (FIREBASE_CONNECTED) {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      await cred.user.updateProfile({ displayName: name });
+      await db.ref('users/' + cred.user.uid).set({
+        name: name, email: email, role: 'student', examType: examType, avatar: '', createdAt: FIREBASE_CONNECTED ? firebase.database.ServerValue.TIMESTAMP : Date.now()
+      });
+      currentUser = cred.user;
+      await loadUserData(cred.user.uid);
+    } else {
+      // Demo mode signup
+      const newUid = 'user-' + Date.now();
+      const accounts = getDemoData('demo_accounts') || [];
+      if (accounts.find(a => a.email === email)) { showAuthError('Email already exists'); return; }
+      accounts.push({ uid: newUid, email: email, password: password, name: name, examType: examType });
+      setLocalData('demo_accounts', accounts);
+      const users = getDemoData('users');
+      users[newUid] = { name: name, email: email, role: 'student', examType: examType, createdAt: Date.now() };
+      setLocalData('users', users);
+      currentUser = { uid: newUid, email: email, displayName: name };
+      loadUserDataDemo(newUid);
+      setLocalData('current_user', currentUser);
+    }
+    showApp();
+    showToast('Account created! Welcome to ACE!', 'success');
+  } catch (e) {
+    showAuthError(e.message.replace('Firebase: ', ''));
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+}
+
+async function loadUserData(uid) {
+  try {
+    const snap = await db.ref('users/' + uid).once('value');
+    if (snap.exists()) {
+      currentUser.userData = snap.val();
+    }
+    // Load purchases
+    const purchSnap = await db.ref('purchases').orderByChild('userId').equalTo(uid).once('value');
+    userPurchases = [];
+    if (purchSnap.exists()) {
+      purchSnap.forEach(child => { userPurchases.push({ id: child.key, ...child.val() }); });
+    }
+  } catch (e) {
+    console.error('Load user data error:', e);
+  }
+}
+
+function handleLogout() {
+  showConfirm('Logout', 'Are you sure you want to logout?', async () => {
+    if (FIREBASE_CONNECTED) {
+      await auth.signOut();
+    }
+    currentUser = null;
+    setLocalData('current_user', null);
+    document.getElementById('app-screen').style.display = 'none';
+    showAuth();
+    showToast('Logged out successfully', 'info');
+  });
+}
+
+// ===== NAVIGATION =====
+function navigateTo(section) {
+  currentSection = section;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('section-' + section);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navEl = document.querySelector(`.nav-item[data-nav="${section}"]`);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+
+  // Load section data
+  if (section === 'tests') loadTests();
+  if (section === 'pdfs') loadPDFs();
+  if (section === 'courses') loadCourses();
+  if (section === 'leaderboard') loadLeaderboard();
+  if (section === 'profile') loadProfile();
+}
+
+// ===== DASHBOARD =====
+async function loadDashboard() {
+  loadBanners();
+  loadFeaturedTests();
+  loadFeaturedPDFs();
+  loadFeaturedCourses();
+}
+
+// Banners
+async function loadBanners() {
+  try {
+    if (FIREBASE_CONNECTED) {
+      const snap = await db.ref('banners').orderByChild('isActive').equalTo(true).once('value');
+      const banners = [];
+      if (snap.exists()) {
+        snap.forEach(child => { banners.push({ id: child.key, ...child.val() }); });
+      }
+      renderBanners(banners);
+    } else {
+      const bannersObj = getDemoData('banners');
+      const banners = Object.values(bannersObj).filter(b => b.active);
+      renderBanners(banners);
+    }
+  } catch (e) {
+    console.error('Banner load error:', e);
+    // Fallback to demo data
+    const bannersObj = getDemoData('banners');
+    const banners = Object.values(bannersObj).filter(b => b.active);
+    renderBanners(banners);
+  }
+}
+
+function renderBanners(banners) {
+  const track = document.getElementById('banner-track');
+  const dots = document.getElementById('banner-dots');
+  if (banners.length === 0) {
+    track.innerHTML = `<div class="banner-slide" style="background:var(--gradient);display:flex;align-items:center;justify-content:center">
+      <div class="banner-slide-content" style="text-align:center"><h3 style="font-size:1.2rem">Welcome to ACE</h3><p style="font-size:0.85rem;opacity:0.8;margin-top:4px">Start your learning journey today!</p></div>
+    </div>`;
+    dots.innerHTML = '';
+    return;
+  }
+  banners.sort((a, b) => (a.order || 0) - (b.order || 0));
+  track.innerHTML = banners.map(b => `
+    <div class="banner-slide">
+      ${b.imageUrl ? `<img src="${b.imageUrl}" alt="${b.title || ''}">` : ''}
+      <div class="banner-slide-overlay"></div>
+      <div class="banner-slide-content"><h3>${b.title || ''}</h3></div>
+    </div>
+  `).join('');
+  dots.innerHTML = banners.map((_, i) => `<div class="banner-dot${i === 0 ? ' active' : ''}" onclick="goToBanner(${i})"></div>`).join('');
+  bannerIndex = 0;
+  if (bannerInterval) clearInterval(bannerInterval);
+  if (banners.length > 1) {
+    bannerInterval = setInterval(() => {
+      bannerIndex = (bannerIndex + 1) % banners.length;
+      goToBanner(bannerIndex);
+    }, 4000);
+  }
+}
+
+function goToBanner(idx) {
+  bannerIndex = idx;
+  document.getElementById('banner-track').style.transform = `translateX(-${idx * 100}%)`;
+  document.querySelectorAll('.banner-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+// Featured Tests
+// ===== HELPER: Load data from Firebase or Demo =====
+async function loadData(collection, orderBy, equalTo, limit) {
+  try {
+    if (FIREBASE_CONNECTED) {
+      let ref = db.ref(collection);
+      if (orderBy && equalTo) ref = ref.orderByChild(orderBy).equalTo(equalTo);
+      else if (orderBy) ref = ref.orderByChild(orderBy);
+      if (limit) ref = ref.limitToLast(limit);
+      const snap = await ref.once('value');
+      const items = [];
+      if (snap.exists()) { snap.forEach(child => { items.push({ id: child.key, ...child.val() }); }); }
+      return items;
+    } else {
+      const data = getDemoData(collection);
+      let items = Object.entries(data).map(([k,v]) => ({ id: k, ...v }));
+      if (orderBy && equalTo !== undefined) items = items.filter(i => i[orderBy] === equalTo);
+      if (orderBy) items.sort((a,b) => (a[orderBy]||0) - (b[orderBy]||0));
+      if (limit) items = items.slice(-limit);
+      return items;
+    }
+  } catch(e) {
+    console.error('Load error:', collection, e);
+    // Fallback to demo data
+    const data = getDemoData(collection);
+    let items = Object.entries(data).map(([k,v]) => ({ id: k, ...v }));
+    if (orderBy && equalTo !== undefined) items = items.filter(i => i[orderBy] === equalTo);
+    if (limit) items = items.slice(-limit);
+    return items;
+  }
+}
+
+async function loadFeaturedTests() {
+  const container = document.getElementById('featured-tests');
+  container.innerHTML = Array(4).fill('<div class="skeleton skeleton-card"></div>').join('');
+  try {
+    const tests = await loadData('tests', 'active', true, 8);
+    allTests = {};
+    tests.forEach(t => { allTests[t.id] = t; });
+    const featured = tests.slice(-4).reverse();
+    if (featured.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#9998;</div><h3>No tests yet</h3><p>Tests will appear here</p></div>';
+      return;
+    }
+    container.innerHTML = featured.map(t => renderTestCard(t)).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading tests</h3></div>';
+  }
+}
+
+function renderTestCard(test) {
+  const isPaid = (test.isPaid || test.type === 'paid') && (test.price > 0);
+  const isPurchased = checkPurchased('test', test.id);
+  return `
+    <div class="content-card" onclick="handleTestClick('${test.id}', ${isPaid}, ${isPurchased})">
+      <div class="content-card-img" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(20,184,166,0.15));display:flex;align-items:center;justify-content:center;font-size:2rem">
+        ${isPaid && !isPurchased ? '&#128274;' : '&#9998;'}
+      </div>
+      <div class="content-card-body">
+        <h4>${escHtml(test.title || '')}</h4>
+        <div class="content-card-meta">
+          ${test.category ? `<span class="badge badge-category">${escHtml(test.category)}</span>` : ''}
+          ${isPaid ? `<span class="badge badge-paid">&#128274; &#8377;${test.price}</span>` : '<span class="badge badge-free">FREE</span>'}
+        </div>
+      </div>
+    </div>`;
+}
+
+// Featured PDFs
+async function loadFeaturedPDFs() {
+  const container = document.getElementById('featured-pdfs');
+  container.innerHTML = Array(2).fill('<div class="skeleton skeleton-rect" style="margin-bottom:12px"></div>').join('');
+  try {
+    const pdfs = await loadData('pdfs', 'active', true, 8);
+    allPDFs = {};
+    pdfs.forEach(p => { allPDFs[p.id] = p; });
+    const featured = pdfs.slice(-4).reverse();
+    if (featured.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><h3>No PDFs yet</h3></div>';
+      return;
+    }
+    container.innerHTML = featured.map(p => renderPDFItem(p)).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading PDFs</h3></div>';
+  }
+}
+
+function renderPDFItem(pdf) {
+  const isPaid = (pdf.isPaid || pdf.type === 'paid') && (pdf.price > 0);
+  const isPurchased = checkPurchased('pdf', pdf.id);
+  return `
+    <div class="pdf-card">
+      <div class="pdf-icon">&#128196;</div>
+      <div class="pdf-info">
+        <h4>${escHtml(pdf.title || '')}</h4>
+        <p>${escHtml(pdf.description || '')}</p>
+        <div class="content-card-meta" style="margin-top:6px">
+          ${pdf.category ? `<span class="badge badge-category">${escHtml(pdf.category)}</span>` : ''}
+          ${isPaid ? `<span class="badge badge-paid">&#128274; &#8377;${pdf.price}</span>` : '<span class="badge badge-free">FREE</span>'}
+        </div>
+      </div>
+      <div style="flex-shrink:0">
+        ${!isPaid || isPurchased
+          ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();viewPDF('${pdf.id}')">View</button>`
+          : `<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();showBuyModal('pdf','${pdf.id}','${escHtml(pdf.title)}',${pdf.price})">&#8377;${pdf.price}</button>`
+        }
+      </div>
+    </div>`;
+}
+
+// Featured Courses
+async function loadFeaturedCourses() {
+  const container = document.getElementById('featured-courses');
+  container.innerHTML = Array(2).fill('<div class="skeleton skeleton-card" style="margin-bottom:12px"></div>').join('');
+  try {
+    const courses = await loadData('courses', 'active', true, 8);
+    allCourses = {};
+    courses.forEach(c => { allCourses[c.id] = c; });
+    // Load videos
+    if (FIREBASE_CONNECTED) {
+      const vidSnap = await db.ref('videos').once('value');
+      allVideos = {};
+      if (vidSnap.exists()) {
+        vidSnap.forEach(child => { allVideos[child.key] = { id: child.key, ...child.val() }; });
+      }
+    } else {
+      allVideos = getDemoData('videos');
+    }
+    const featured = courses.slice(-4).reverse();
+    if (featured.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#127891;</div><h3>No courses yet</h3></div>';
+      return;
+    }
+    container.innerHTML = featured.map(c => renderCourseCard(c)).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading courses</h3></div>';
+  }
+}
+
+function renderCourseCard(course) {
+  const isPaid = (course.isPaid || course.type === 'paid') && (course.price > 0);
+  const isPurchased = checkPurchased('course', course.id);
+  const videoCount = Object.values(allVideos).filter(v => v.courseId === course.id).length;
+  return `
+    <div class="course-card">
+      <div class="course-thumb">
+        ${course.imageUrl ? `<img src="${course.imageUrl}" alt="${escHtml(course.title)}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(20,184,166,0.1))">&#127891;</div>`}
+        ${isPaid && !isPurchased ? '<div class="course-lock-overlay">&#128274;</div>' : ''}
+      </div>
+      <div class="course-body">
+        <h4>${escHtml(course.title || '')}</h4>
+        <p>${videoCount} video${videoCount !== 1 ? 's' : ''} ${course.category ? ' &bull; ' + escHtml(course.category) : ''}</p>
+        <div class="content-card-meta" style="margin-top:6px">
+          ${isPaid ? `<span class="badge badge-paid">&#128274; &#8377;${course.price}</span>` : '<span class="badge badge-free">FREE</span>'}
+        </div>
+      </div>
+      <div class="course-actions">
+        ${isPaid && !isPurchased
+          ? `<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();showBuyModal('course','${course.id}','${escHtml(course.title)}',${course.price})">Buy &#8377;${course.price}</button>`
+          : `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();toggleCoursePlaylist('${course.id}')">View Videos</button>`
+        }
+      </div>
+      <div class="video-playlist" id="playlist-${course.id}" style="display:none">
+        ${renderVideoPlaylist(course.id)}
+      </div>
+    </div>`;
+}
+
+function renderVideoPlaylist(courseId) {
+  const vids = Object.values(allVideos).filter(v => v.courseId === courseId).sort((a, b) => (a.order || 0) - (b.order || 0));
+  if (vids.length === 0) return '<p style="font-size:0.82rem;color:var(--text-muted);padding:8px">No videos yet</p>';
+  return vids.map(v => `
+    <div class="video-item" onclick="playVideo('${escHtml(v.youtubeUrl || '')}')">
+      <div class="video-play-icon">&#9654;</div>
+      <div class="video-item-title">${escHtml(v.title || '')}</div>
+      <div class="video-item-order">#${v.order || '-'}</div>
+    </div>
+  `).join('');
+}
+
+function toggleCoursePlaylist(courseId) {
+  const el = document.getElementById('playlist-' + courseId);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ===== TEST SERIES PAGE =====
+async function loadTests() {
+  const container = document.getElementById('test-list');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    const tests = await loadData('tests', 'active', true);
+    allTests = {};
+    tests.forEach(t => { allTests[t.id] = t; });
+    // Get question counts
+    let qCounts = {};
+    if (FIREBASE_CONNECTED) {
+      const qSnap = await db.ref('questions').once('value');
+      if (qSnap.exists()) {
+        qSnap.forEach(child => {
+          const tid = child.val().testId;
+          qCounts[tid] = (qCounts[tid] || 0) + 1;
+        });
+      }
+    } else {
+      const questions = getDemoData('questions');
+      Object.entries(questions).forEach(([testId, qs]) => {
+        qCounts[testId] = Object.keys(qs).length;
+      });
+    }
+    renderTestList(tests, qCounts);
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading tests</h3></div>';
+  }
+}
+
+function renderTestList(tests, qCounts) {
+  const container = document.getElementById('test-list');
+  const searchVal = (document.getElementById('test-search').value || '').toLowerCase();
+  let filtered = tests;
+  if (testFilter === 'free') filtered = filtered.filter(t => !(t.isPaid || t.type === 'paid') || t.price <= 0);
+  if (testFilter === 'paid') filtered = filtered.filter(t => (t.isPaid || t.type === 'paid') && t.price > 0);
+  if (searchVal) filtered = filtered.filter(t => (t.title || '').toLowerCase().includes(searchVal) || (t.category || '').toLowerCase().includes(searchVal));
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#9998;</div><h3>No tests found</h3><p>Try a different filter or search</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(t => {
+    const isPaid = (t.isPaid || t.type === 'paid') && t.price > 0;
+    const isPurchased = checkPurchased('test', t.id);
+    const qCount = qCounts[t.id] || t.totalQuestions || 0;
+    return `
+      <div class="test-card">
+        <div class="test-card-top">
+          <h4>${escHtml(t.title || '')}</h4>
+          ${isPaid ? `<span class="badge badge-paid">&#128274; &#8377;${t.price}</span>` : '<span class="badge badge-free">FREE</span>'}
+        </div>
+        <div class="test-card-desc">${escHtml(t.description || 'No description')}</div>
+        <div class="test-card-stats">
+          <span>&#9998; ${qCount} Qs</span>
+          <span>&#9201; ${t.timeLimit || 0} min</span>
+          <span>&#127942; ${t.totalMarks || 0} marks</span>
+          ${t.category ? `<span>&#128193; ${escHtml(t.category)}</span>` : ''}
+        </div>
+        <div class="test-card-actions">
+          ${!isPaid || isPurchased
+            ? `<button class="btn btn-primary btn-sm" onclick="startTest('${t.id}')">Start Test</button>`
+            : `<button class="btn btn-outline btn-sm" onclick="showBuyModal('test','${t.id}','${escHtml(t.title)}',${t.price})">Buy &#8377;${t.price}</button>`
+          }
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function setTestFilter(filter, btn) {
+  testFilter = filter;
+  document.querySelectorAll('#test-filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  loadTests();
+}
+
+function filterTests() { loadTests(); }
+function filterPDFs() { loadPDFs(); }
+function filterCourses() { loadCourses(); }
+
+// ===== TEST TAKING =====
+async function handleTestClick(testId, isPaid, isPurchased) {
+  if (isPaid && !isPurchased) {
+    const test = allTests[testId];
+    if (test) showBuyModal('test', testId, test.title, test.price);
+    return;
+  }
+  startTest(testId);
+}
+
+async function startTest(testId) {
+  try {
+    if (FIREBASE_CONNECTED) {
+      const testSnap = await db.ref('tests/' + testId).once('value');
+      if (!testSnap.exists()) { showToast('Test not found', 'error'); return; }
+      activeTest = { id: testId, ...testSnap.val() };
+
+      const qSnap = await db.ref('questions').orderByChild('testId').equalTo(testId).once('value');
+      activeQuestions = [];
+      if (qSnap.exists()) {
+        qSnap.forEach(child => { activeQuestions.push({ id: child.key, ...child.val() }); });
+      }
+    } else {
+      // Demo mode
+      const tests = getDemoData('tests');
+      if (!tests[testId]) { showToast('Test not found', 'error'); return; }
+      activeTest = { id: testId, ...tests[testId] };
+
+      const questions = getDemoData('questions');
+      const testQs = questions[testId] || {};
+      activeQuestions = Object.entries(testQs).map(([k,v]) => ({ id: k, ...v }));
+    }
+
+    if (activeQuestions.length === 0) {
+      showToast('No questions in this test', 'error');
+      return;
+    }
+
+    currentQIndex = 0;
+    userAnswers = {};
+    testStartTime = Date.now();
+    testTimeLeft = (activeTest.timeLimit || activeTest.duration || 30) * 60;
+
+    document.getElementById('test-title').textContent = activeTest.title || 'Test';
+    document.getElementById('test-screen').classList.add('show');
+    renderQuestion();
+    renderQNav();
+    startTimer();
+  } catch (e) {
+    showToast('Error starting test: ' + e.message, 'error');
+  }
+}
+
+function renderQuestion() {
+  const q = activeQuestions[currentQIndex];
+  const total = activeQuestions.length;
+  document.getElementById('test-progress').textContent = `Question ${currentQIndex + 1} of ${total}`;
+
+  const selectedAns = userAnswers[q.id] || null;
+  const options = [
+    { letter: 'A', text: q.optionA },
+    { letter: 'B', text: q.optionB },
+    { letter: 'C', text: q.optionC },
+    { letter: 'D', text: q.optionD }
+  ];
+
+  document.getElementById('test-body').innerHTML = `
+    <div class="question-card">
+      <div class="question-marks">${q.marks || 1} mark${(q.marks || 1) > 1 ? 's' : ''}</div>
+      <div class="question-text">${escHtml(q.question || '')}</div>
+      <div class="options-list">
+        ${options.map(opt => `
+          <div class="option-item${selectedAns === opt.letter ? ' selected' : ''}" onclick="selectOption('${q.id}','${opt.letter}')">
+            <div class="option-letter">${opt.letter}</div>
+            <div class="option-text">${escHtml(opt.text || '')}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+
+  // Update nav buttons
+  document.getElementById('prev-q-btn').style.display = currentQIndex > 0 ? '' : 'none';
+  document.getElementById('next-q-btn').style.display = currentQIndex < total - 1 ? '' : 'none';
+  document.getElementById('submit-test-btn').style.display = currentQIndex === total - 1 ? '' : 'none';
+
+  updateQNav();
+}
+
+function selectOption(qId, letter) {
+  if (userAnswers[qId] === letter) {
+    delete userAnswers[qId]; // deselect
+  } else {
+    userAnswers[qId] = letter;
+  }
+  renderQuestion();
+}
+
+function prevQuestion() {
+  if (currentQIndex > 0) { currentQIndex--; renderQuestion(); }
+}
+
+function nextQuestion() {
+  if (currentQIndex < activeQuestions.length - 1) { currentQIndex++; renderQuestion(); }
+}
+
+function goToQuestion(idx) {
+  currentQIndex = idx;
+  renderQuestion();
+}
+
+function renderQNav() {
+  const nav = document.getElementById('q-nav');
+  nav.innerHTML = activeQuestions.map((q, i) => {
+    let cls = 'q-nav-dot';
+    if (i === currentQIndex) cls += ' current';
+    else if (userAnswers[q.id]) cls += ' answered';
+    return `<div class="${cls}" onclick="goToQuestion(${i})">${i + 1}</div>`;
+  }).join('');
+}
+
+function updateQNav() {
+  const dots = document.querySelectorAll('.q-nav-dot');
+  dots.forEach((dot, i) => {
+    dot.className = 'q-nav-dot';
+    if (i === currentQIndex) dot.classList.add('current');
+    else if (userAnswers[activeQuestions[i].id]) dot.classList.add('answered');
+  });
+}
+
+function startTimer() {
+  if (testTimerInterval) clearInterval(testTimerInterval);
+  testTimerInterval = setInterval(() => {
+    testTimeLeft--;
+    if (testTimeLeft <= 0) {
+      testTimeLeft = 0;
+      clearInterval(testTimerInterval);
+      submitTest();
+      return;
+    }
+    const mins = Math.floor(testTimeLeft / 60);
+    const secs = testTimeLeft % 60;
+    document.getElementById('test-timer').textContent =
+      `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }, 1000);
+  // Initial display
+  const mins = Math.floor(testTimeLeft / 60);
+  const secs = testTimeLeft % 60;
+  document.getElementById('test-timer').textContent =
+    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+function confirmExitTest() {
+  showConfirm('Exit Test?', 'Your progress will be lost. Are you sure?', () => {
+    exitTest();
+  });
+}
+
+function exitTest() {
+  if (testTimerInterval) clearInterval(testTimerInterval);
+  document.getElementById('test-screen').classList.remove('show');
+  activeTest = null;
+  activeQuestions = [];
+  userAnswers = {};
+}
+
+function confirmSubmitTest() {
+  const answered = Object.keys(userAnswers).length;
+  const total = activeQuestions.length;
+  const unanswered = total - answered;
+  showConfirm(
+    'Submit Test?',
+    `You have answered ${answered} out of ${total} questions.${unanswered > 0 ? ` ${unanswered} question${unanswered > 1 ? 's are' : ' is'} unanswered.` : ''}`,
+    () => submitTest()
+  );
+}
+
+async function submitTest() {
+  if (testTimerInterval) clearInterval(testTimerInterval);
+  const timeTaken = Math.round((Date.now() - testStartTime) / 1000);
+  let correct = 0, incorrect = 0, skipped = 0, score = 0, totalMarks = 0;
+
+  const answerDetails = activeQuestions.map(q => {
+    const userAns = userAnswers[q.id] || null;
+    const isCorrect = userAns === q.correctAns;
+    const marks = q.marks || 1;
+    totalMarks += marks;
+    if (!userAns) { skipped++; }
+    else if (isCorrect) { correct++; score += marks; }
+    else { incorrect++; }
+    return { questionId: q.id, userAnswer: userAns, correctAnswer: q.correctAns, isCorrect };
+  });
+
+  // Save result to Firebase
+  const resultData = {
+    userId: currentUser.uid,
+    testId: activeTest.id,
+    score: score,
+    totalMarks: totalMarks,
+    correct: correct,
+    incorrect: incorrect,
+    skipped: skipped,
+    timeTaken: timeTaken,
+    answers: answerDetails,
+    createdAt: FIREBASE_CONNECTED ? firebase.database.ServerValue.TIMESTAMP : Date.now()
+  };
+
+  try {
+    await db.ref('testResults').push(resultData);
+  } catch (e) {
+    console.error('Save result error:', e);
+  }
+
+  // Close test screen
+  document.getElementById('test-screen').classList.remove('show');
+
+  // Show result
+  showResult(score, totalMarks, correct, incorrect, skipped, timeTaken);
+}
+
+function showResult(score, totalMarks, correct, incorrect, skipped, timeTaken) {
+  document.getElementById('result-score').textContent = score;
+  document.getElementById('result-score-label').textContent = `out of ${totalMarks}`;
+  document.getElementById('result-correct').textContent = correct;
+  document.getElementById('result-incorrect').textContent = incorrect;
+  document.getElementById('result-skipped').textContent = skipped;
+
+  const timeMin = Math.floor(timeTaken / 60);
+  const timeSec = timeTaken % 60;
+  document.getElementById('result-score-label').textContent += ` | Time: ${timeMin}m ${timeSec}s`;
+
+  // Render detailed answers
+  const list = document.getElementById('result-answers-list');
+  list.innerHTML = activeQuestions.map((q, i) => {
+    const userAns = userAnswers[q.id] || null;
+    const isCorrect = userAns === q.correctAns;
+    const options = { A: q.optionA, B: q.optionB, C: q.optionC, D: q.optionD };
+    return `
+      <div class="result-q-card">
+        <div class="rq-question">Q${i + 1}. ${escHtml(q.question || '')}</div>
+        ${userAns
+          ? `<div class="rq-answer ${isCorrect ? 'rq-correct' : 'rq-incorrect'}">Your answer: ${userAns} - ${escHtml(options[userAns] || '')} ${isCorrect ? '&#10004;' : '&#10008;'}</div>`
+          : '<div class="rq-answer" style="background:rgba(148,163,184,0.15);color:var(--text-muted)">Skipped</div>'
+        }
+        ${!isCorrect ? `<div class="rq-answer rq-correct">Correct answer: ${q.correctAns} - ${escHtml(options[q.correctAns] || '')}</div>` : ''}
+        ${q.explanation ? `<div class="rq-explanation">&#128161; ${escHtml(q.explanation)}</div>` : ''}
+      </div>`;
+  }).join('');
+
+  document.getElementById('result-screen').classList.add('show');
+}
+
+function closeResultScreen() {
+  document.getElementById('result-screen').classList.remove('show');
+  activeTest = null;
+  activeQuestions = [];
+  userAnswers = {};
+  navigateTo('home');
+}
+
+// ===== PDF SECTION =====
+async function loadPDFs() {
+  const container = document.getElementById('pdf-list');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    const pdfs = await loadData('pdfs', 'active', true);
+    allPDFs = {};
+    pdfs.forEach(p => { allPDFs[p.id] = p; });
+
+    const searchVal = (document.getElementById('pdf-search').value || '').toLowerCase();
+    let filtered = pdfs;
+    if (searchVal) filtered = filtered.filter(p => (p.title || '').toLowerCase().includes(searchVal));
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128196;</div><h3>No PDFs found</h3></div>';
+      return;
+    }
+    container.innerHTML = filtered.map(p => renderPDFItem(p)).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading PDFs</h3></div>';
+  }
+}
+
+function viewPDF(pdfId) {
+  const pdf = allPDFs[pdfId];
+  if (pdf && pdf.pdfUrl) {
+    window.open(pdf.pdfUrl, '_blank');
+  } else {
+    showToast('PDF URL not available', 'error');
+  }
+}
+
+// ===== COURSES SECTION =====
+async function loadCourses() {
+  const container = document.getElementById('course-list');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    const courses = await loadData('courses', 'active', true);
+    allCourses = {};
+    courses.forEach(c => { allCourses[c.id] = c; });
+
+    // Load videos
+    if (FIREBASE_CONNECTED) {
+      const vidSnap = await db.ref('videos').once('value');
+      allVideos = {};
+      if (vidSnap.exists()) {
+        vidSnap.forEach(child => { allVideos[child.key] = { id: child.key, ...child.val() }; });
+      }
+    } else {
+      allVideos = getDemoData('videos');
+    }
+
+    const searchVal = (document.getElementById('course-search').value || '').toLowerCase();
+    let filtered = courses;
+    if (searchVal) filtered = filtered.filter(c => (c.title || '').toLowerCase().includes(searchVal));
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#127891;</div><h3>No courses found</h3></div>';
+      return;
+    }
+    container.innerHTML = filtered.map(c => renderCourseCard(c)).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading courses</h3></div>';
+  }
+}
+
+function playVideo(youtubeUrl) {
+  if (!youtubeUrl) { showToast('Video URL not available', 'error'); return; }
+  const videoId = extractYouTubeId(youtubeUrl);
+  if (videoId) {
+    document.getElementById('video-iframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    document.getElementById('video-modal').classList.add('show');
+  } else {
+    window.open(youtubeUrl, '_blank');
+  }
+}
+
+function extractYouTubeId(url) {
+  if (!url) return null;
+  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+function closeVideoModal() {
+  document.getElementById('video-modal').classList.remove('show');
+  document.getElementById('video-iframe').src = '';
+}
+
+// ===== PROFILE =====
+async function loadProfile() {
+  if (!currentUser) return;
+  const userData = currentUser.userData || {};
+  document.getElementById('profile-avatar').textContent = (userData.name || 'A').charAt(0).toUpperCase();
+  document.getElementById('profile-name').textContent = userData.name || 'Student';
+  document.getElementById('profile-email').textContent = userData.email || currentUser.email || '';
+
+  // Load UPI ID
+  try {
+    const upiSnap = await db.ref('settings/upiId').once('value');
+    const upiId = upiSnap.exists() ? upiSnap.val().value : 'ace@upi';
+    document.getElementById('upi-id-display').textContent = upiId;
+    document.getElementById('buy-modal-upi').textContent = upiId;
+  } catch (e) {
+    document.getElementById('upi-id-display').textContent = 'ace@upi';
+    document.getElementById('buy-modal-upi').textContent = 'ace@upi';
+  }
+
+  loadPurchases();
+  loadTestResults();
+  loadPayments();
+}
+
+async function loadPurchases() {
+  const container = document.getElementById('ptab-purchases');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    await loadUserData(currentUser.uid);
+    if (userPurchases.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128722;</div><h3>No purchases yet</h3><p>Buy tests, PDFs, or courses</p></div>';
+      return;
+    }
+    container.innerHTML = userPurchases.map(p => {
+      const contentName = getContentName(p.contentType, p.contentId);
+      return `
+        <div class="purchase-item">
+          <h4>${escHtml(contentName)}</h4>
+          <p>${p.contentType} &bull; ${new Date(p.createdAt).toLocaleDateString()}</p>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading purchases</h3></div>';
+  }
+}
+
+async function loadTestResults() {
+  const container = document.getElementById('ptab-results');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    const snap = await db.ref('testResults').orderByChild('userId').equalTo(currentUser.uid).once('value');
+    const results = [];
+    if (snap.exists()) {
+      snap.forEach(child => { results.push({ id: child.key, ...child.val() }); });
+    }
+    results.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+    if (results.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#9998;</div><h3>No test results</h3><p>Take a test to see results here</p></div>';
+      return;
+    }
+
+    container.innerHTML = results.map(r => {
+      const testName = allTests[r.testId] ? allTests[r.testId].title : r.testId;
+      return `
+        <div class="result-item">
+          <h4>${escHtml(testName)}</h4>
+          <p>Score: ${r.score}/${r.totalMarks} | Correct: ${r.correct} | Incorrect: ${r.incorrect} | Skipped: ${r.skipped}</p>
+          <p>${new Date(r.createdAt).toLocaleString()}</p>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading results</h3></div>';
+  }
+}
+
+async function loadPayments() {
+  const container = document.getElementById('ptab-payments');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    const snap = await db.ref('payments').orderByChild('userId').equalTo(currentUser.uid).once('value');
+    const payments = [];
+    if (snap.exists()) {
+      snap.forEach(child => { payments.push({ id: child.key, ...child.val() }); });
+    }
+    payments.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+    if (payments.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128179;</div><h3>No payments</h3><p>Submit a payment to see it here</p></div>';
+      return;
+    }
+
+    container.innerHTML = payments.map(p => {
+      const statusClass = p.status === 'approved' ? 'status-approved' : p.status === 'rejected' ? 'status-rejected' : 'status-pending';
+      return `
+        <div class="payment-item">
+          <h4>&#8377;${p.amount} - ${p.paymentType}</h4>
+          <p>UPI Ref: ${p.upiRef || 'N/A'} | ${new Date(p.createdAt).toLocaleDateString()}</p>
+          <span class="payment-status ${statusClass}">${p.status || 'pending'}</span>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading payments</h3></div>';
+  }
+}
+
+function switchProfileTab(tab, btn) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.profile-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ptab-' + tab).classList.add('active');
+}
+
+async function submitPayment() {
+  const amount = document.getElementById('pay-amount').value;
+  const type = document.getElementById('pay-type').value;
+  const contentId = document.getElementById('pay-content-id').value.trim();
+  const screenshot = document.getElementById('pay-screenshot').value.trim();
+  const upiRef = document.getElementById('pay-upi-ref').value.trim();
+
+  if (!amount || !upiRef) {
+    showToast('Please fill amount and UPI reference', 'error');
+    return;
+  }
+
+  try {
+    await db.ref('payments').push({
+      userId: currentUser.uid,
+      amount: parseFloat(amount),
+      paymentType: type,
+      contentId: contentId,
+      screenshotUrl: screenshot,
+      upiRef: upiRef,
+      status: 'pending',
+      createdAt: FIREBASE_CONNECTED ? firebase.database.ServerValue.TIMESTAMP : Date.now()
+    });
+    showToast('Payment submitted! We will verify shortly.', 'success');
+    // Clear form
+    document.getElementById('pay-amount').value = '';
+    document.getElementById('pay-content-id').value = '';
+    document.getElementById('pay-screenshot').value = '';
+    document.getElementById('pay-upi-ref').value = '';
+    loadPayments();
+  } catch (e) {
+    showToast('Error submitting payment: ' + e.message, 'error');
+  }
+}
+
+// ===== LEADERBOARD =====
+async function loadLeaderboard() {
+  const container = document.getElementById('leaderboard-content');
+  container.innerHTML = '<div class="spinner"></div>';
+  try {
+    let sorted = [];
+    if (FIREBASE_CONNECTED) {
+      const snap = await db.ref('testResults').once('value');
+      const userScores = {};
+      if (snap.exists()) {
+        snap.forEach(child => {
+          const r = child.val();
+          if (!userScores[r.userId]) {
+            userScores[r.userId] = { totalScore: 0, testsTaken: 0, name: 'User' };
+          }
+          userScores[r.userId].totalScore += (r.score || 0);
+          userScores[r.userId].testsTaken += 1;
+        });
+      }
+      // Get user names
+      const uids = Object.keys(userScores);
+      for (const uid of uids) {
+        try {
+          const uSnap = await db.ref('users/' + uid + '/name').once('value');
+          if (uSnap.exists()) userScores[uid].name = uSnap.val();
+        } catch (e) {}
+      }
+      sorted = Object.entries(userScores)
+        .map(([uid, data]) => ({ uid, ...data }))
+        .sort((a, b) => b.totalScore - a.totalScore);
+    } else {
+      // Demo leaderboard
+      const lb = getDemoData('leaderboard');
+      sorted = Object.entries(lb).map(([k,v]) => ({ uid: k, ...v })).sort((a,b) => (b.score||0) - (a.score||0));
+    }
+
+    if (sorted.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#127942;</div><h3>No leaderboard data</h3><p>Take tests to appear here</p></div>';
+      return;
+    }
+
+    // Podium (top 3)
+    const medals = ['&#129351;', '&#129352;', '&#129353;'];
+    const podiumClasses = ['gold', 'silver', 'bronze'];
+    const top3 = sorted.slice(0, 3);
+    // Reorder for podium: 2nd, 1st, 3rd
+    const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
+
+    let html = '<div class="leaderboard-podium">';
+    podiumOrder.forEach((user, i) => {
+      const actualIdx = top3.length >= 3 ? [1, 0, 2][i] : i;
+      html += `
+        <div class="podium-item ${podiumClasses[actualIdx]}">
+          <div class="podium-medal">${medals[actualIdx]}</div>
+          <div class="podium-name">${escHtml(user.name)}</div>
+          <div class="podium-score">${user.totalScore || user.score || 0} pts</div>
+        </div>`;
+    });
+    html += '</div>';
+
+    // Full list
+    html += sorted.map((user, i) => `
+      <div class="lb-list-item">
+        <div class="lb-rank">${i + 1}</div>
+        <div class="lb-info">
+          <h4>${escHtml(user.name)}</h4>
+          <p>${user.testsTaken || user.tests || 0} test${(user.testsTaken || user.tests || 0) !== 1 ? 's' : ''} taken</p>
+        </div>
+        <div class="lb-score">${user.totalScore || user.score || 0}</div>
+      </div>
+    `).join('');
+
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Error loading leaderboard</h3></div>';
+  }
+}
+
+// ===== SEARCH =====
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('show');
+  document.getElementById('search-input').focus();
+}
+
+function closeSearch(e) {
+  if (e && e.target !== document.getElementById('search-overlay')) return;
+  document.getElementById('search-overlay').classList.remove('show');
+}
+
+async function handleSearch() {
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  const container = document.getElementById('search-results');
+  if (!query) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128269;</div><h3>Search</h3><p>Type to search across tests, PDFs, and courses</p></div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const results = [];
+
+    // Search tests
+    const tSnap = await db.ref('tests').orderByChild('isActive').equalTo(true).once('value');
+    if (tSnap.exists()) {
+      tSnap.forEach(child => {
+        const t = child.val();
+        if ((t.title || '').toLowerCase().includes(query)) {
+          results.push({ type: 'test', id: child.key, title: t.title, subtitle: t.category || 'Test' });
+        }
+      });
+    }
+
+    // Search PDFs
+    const pSnap = await db.ref('pdfs').orderByChild('isActive').equalTo(true).once('value');
+    if (pSnap.exists()) {
+      pSnap.forEach(child => {
+        const p = child.val();
+        if ((p.title || '').toLowerCase().includes(query)) {
+          results.push({ type: 'pdf', id: child.key, title: p.title, subtitle: p.category || 'PDF' });
+        }
+      });
+    }
+
+    // Search courses
+    const cSnap = await db.ref('courses').orderByChild('isActive').equalTo(true).once('value');
+    if (cSnap.exists()) {
+      cSnap.forEach(child => {
+        const c = child.val();
+        if ((c.title || '').toLowerCase().includes(query)) {
+          results.push({ type: 'course', id: child.key, title: c.title, subtitle: c.category || 'Course' });
+        }
+      });
+    }
+
+    if (results.length === 0) {
+      container.innerHTML = '<div class="empty-state"><h3>No results found</h3><p>Try a different search term</p></div>';
+      return;
+    }
+
+    const icons = { test: '&#9998;', pdf: '&#128196;', course: '&#127891;' };
+    container.innerHTML = results.map(r => `
+      <div class="search-result-item" onclick="handleSearchClick('${r.type}','${r.id}')">
+        <div class="search-result-icon">${icons[r.type]}</div>
+        <div class="search-result-info">
+          <h4>${escHtml(r.title)}</h4>
+          <p>${escHtml(r.subtitle)}</p>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><h3>Search error</h3></div>';
+  }
+}
+
+function handleSearchClick(type, id) {
+  document.getElementById('search-overlay').classList.remove('show');
+  if (type === 'test') {
+    navigateTo('tests');
+    setTimeout(() => startTest(id), 500);
+  } else if (type === 'pdf') {
+    navigateTo('pdfs');
+  } else if (type === 'course') {
+    navigateTo('courses');
+  }
+}
+
+// ===== NOTIFICATIONS =====
+async function loadNotifications() {
+  if (!currentUser) return;
+  try {
+    if (FIREBASE_CONNECTED) {
+      // Listen for notifications
+      db.ref('notifications').orderByChild('createdAt').on('value', (snap) => {
+        const notifs = [];
+        if (snap.exists()) {
+          snap.forEach(child => {
+            const n = child.val();
+            if (n.userId === currentUser.uid || n.userId === '') {
+              notifs.push({ id: child.key, ...n });
+            }
+          });
+        }
+        notifs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        const unread = notifs.filter(n => !n.isRead).length;
+        const badge = document.getElementById('notif-badge');
+        if (unread > 0) {
+          badge.textContent = unread > 99 ? '99+' : unread;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+        window._notifications = notifs;
+      });
+    } else {
+      // Demo mode notifications
+      const notifsObj = getDemoData('notifications');
+      const notifs = Object.entries(notifsObj).map(([k,v]) => ({ id: k, ...v })).filter(n => n.target === 'all');
+      notifs.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const badge = document.getElementById('notif-badge');
+      if (notifs.length > 0) {
+        badge.textContent = notifs.length > 99 ? '99+' : notifs.length;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+      window._notifications = notifs;
+    }
+  } catch (e) {
+    console.error('Notification load error:', e);
+    // Fallback
+    const notifsObj = getDemoData('notifications');
+    const notifs = Object.entries(notifsObj).map(([k,v]) => ({ id: k, ...v })).filter(n => n.target === 'all');
+    window._notifications = notifs;
+  }
+}
+
+function toggleNotifications() {
+  const overlay = document.getElementById('notif-overlay');
+  const panel = document.getElementById('notif-panel');
+  const isOpen = panel.classList.contains('show');
+  if (isOpen) {
+    closeNotifications();
+  } else {
+    overlay.classList.add('show');
+    panel.classList.add('show');
+    renderNotifications();
+  }
+}
+
+function closeNotifications() {
+  document.getElementById('notif-overlay').classList.remove('show');
+  document.getElementById('notif-panel').classList.remove('show');
+}
+
+function renderNotifications() {
+  const container = document.getElementById('notif-list');
+  const notifs = window._notifications || [];
+  if (notifs.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128276;</div><h3>No notifications</h3></div>';
+    return;
+  }
+
+  container.innerHTML = notifs.map(n => `
+    <div class="notif-item${n.isRead ? ' read' : ''}" onclick="markNotifRead('${n.id}')">
+      <h4>${escHtml(n.title || 'Notification')}</h4>
+      <p>${escHtml(n.message || '')}</p>
+      <div class="notif-time">${n.createdAt ? new Date(n.createdAt).toLocaleString() : ''}</div>
+    </div>
+  `).join('');
+}
+
+async function markNotifRead(notifId) {
+  try {
+    await db.ref('notifications/' + notifId + '/isRead').set(true);
+  } catch (e) {}
+}
+
+// ===== BUY MODAL =====
+function showBuyModal(contentType, contentId, title, price) {
+  document.getElementById('buy-modal-title').textContent = title || 'Purchase Content';
+  document.getElementById('buy-modal-price').textContent = '\u20B9' + (price || 0);
+  document.getElementById('buy-modal').classList.add('show');
+
+  document.getElementById('buy-modal-confirm').onclick = () => {
+    // Redirect to profile payment form
+    closeBuyModal();
+    navigateTo('profile');
+    setTimeout(() => {
+      switchProfileTab('payment-form', document.querySelectorAll('.profile-tab')[3]);
+      document.getElementById('pay-amount').value = price || '';
+      document.getElementById('pay-type').value = contentType;
+      document.getElementById('pay-content-id').value = contentId;
+    }, 300);
+  };
+}
+
+function closeBuyModal() {
+  document.getElementById('buy-modal').classList.remove('show');
+}
+
+// ===== CONFIRM DIALOG =====
+function showConfirm(title, message, onConfirm) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-message').textContent = message;
+  document.getElementById('confirm-overlay').classList.add('show');
+  document.getElementById('confirm-action-btn').onclick = () => {
+    closeConfirm();
+    onConfirm();
+  };
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('show');
+}
+
+// ===== TOAST =====
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===== HELPERS =====
+function escHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function checkPurchased(contentType, contentId) {
+  return userPurchases.some(p => p.contentType === contentType && p.contentId === contentId);
+}
+
+function getContentName(contentType, contentId) {
+  if (contentType === 'test' && allTests[contentId]) return allTests[contentId].title;
+  if (contentType === 'pdf' && allPDFs[contentId]) return allPDFs[contentId].title;
+  if (contentType === 'course' && allCourses[contentId]) return allCourses[contentId].title;
+  return contentId;
+}
+
+// Handle keyboard in search
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeSearch();
+    closeNotifications();
+    closeVideoModal();
+    closeBuyModal();
+    closeConfirm();
+  }
+});
+</script>
+</body>
+</html>

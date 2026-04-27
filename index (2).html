@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arithmetic Computer Education - Harda</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 20px;
+  overflow: hidden;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(16,185,129,0.12), transparent 70%);
+  top: -150px; right: -150px;
+  border-radius: 50%;
+}
+body::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(20,184,166,0.08), transparent 70%);
+  bottom: -100px; left: -100px;
+  border-radius: 50%;
+}
+.container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+.logo-ring {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  animation: pulse-ring 2s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(16,185,129,0.4), 0 0 80px rgba(20,184,166,0.2);
+}
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(16,185,129,0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(16,185,129,0.6); }
+}
+.logo-text {
+  font-size: 2.5rem; font-weight: 900; color: #fff;
+  letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.subtitle {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin-bottom: 40px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(16,185,129,0.3);
+  box-shadow: 0 12px 40px rgba(16,185,129,0.15);
+}
+.card-icon {
+  width: 60px; height: 60px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+}
+.card-icon.admin {
+  background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(99,102,241,0.2));
+}
+.card-icon.user {
+  background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(20,184,166,0.2));
+}
+.card h3 { font-size: 1.1rem; font-weight: 700; }
+.card p { font-size: 0.8rem; color: #94a3b8; line-height: 1.5; }
+.info {
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  font-size: 0.82rem;
+  color: #fbbf24;
+  line-height: 1.6;
+  text-align: left;
+}
+.info strong { color: #f59e0b; }
+.footer {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 12px;
+}
+@media (max-width: 480px) {
+  .cards { grid-template-columns: 1fr; }
+  h1 { font-size: 1.4rem; }
+  .logo-ring { width: 90px; height: 90px; }
+  .logo-text { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo-ring">
+    <div class="logo-text">ACE</div>
+  </div>
+  <h1>Arithmetic Computer Education</h1>
+  <p class="subtitle">Harda's Premier Computer Education Platform</p>
+
+  <div class="cards">
+    <a href="user.html" class="card">
+      <div class="card-icon user">&#x1F393;</div>
+      <h3>Student App</h3>
+      <p>Tests, PDFs, Video Courses & More</p>
+    </a>
+    <a href="admin.html" class="card">
+      <div class="card-icon admin">&#x1F4CA;</div>
+      <h3>Admin Panel</h3>
+      <p>Manage Content, Users & Payments</p>
+    </a>
+  </div>
+
+  <div class="info">
+    <strong>&#9888;&#65039; Running in Demo Mode</strong> — Add your Firebase config in the JavaScript section of each file to connect a real database.<br>
+    <strong>Admin Login:</strong> admin@arithmetic.com / admin123<br>
+    <strong>Student Login:</strong> rahul@demo.com / password123<br>
+    <strong>Or create</strong> any new account on the Student App.
+  </div>
+
+  <div class="footer">&copy; 2025 Arithmetic Computer Education, Harda (M.P.)</div>
+</div>
+
+</body>
+</html>
